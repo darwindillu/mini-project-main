@@ -1,0 +1,145 @@
+<%- include('../include/adminheader') -%>
+
+
+  <nav>
+    <input type="checkbox" id="check">
+    <label for="check" class="checkbtn">
+      <i class="fas fa-bars"></i>
+    </label>
+
+    <label class="logo">ALL Products</label>
+
+    <a href="/admin/addproduct" style="text-decoration: none; color: white; ">Add Product</a>
+
+
+    <ul style="margin-right: 160px;">
+      <li>
+
+
+        <!-- <form action="/admin/search" method="post" class="input-group" >
+                  
+                  <input name="username" id="searchInput" class="form-control rounded" placeholder="Search by username" aria-label="Search" aria-describedby="search-addon" />
+                  <button type="submit" class="btn btn-secondary">search</button>
+                </form> -->
+      </li>
+    </ul>
+  </nav>
+  <div>
+    <% if (successMessage) { %>
+      <div class="alert alert-success">
+        <%= successMessage %>
+      </div>
+      <script>
+        setTimeout(function () {
+          var successMessageDiv = document.querySelector('.alert-success');
+          if (successMessageDiv) {
+            successMessageDiv.style.display = 'none';
+          }
+        }, 3000); 
+      </script>
+      <% } %>
+  </div>
+
+  <table style="text-align: center; margin-top: 80px; " class="table table-bordered">
+
+
+    <thead>
+      <tr class="table-dark">
+
+        <th scope="col">NO</th>
+        <th scope="col">NAME</th>
+        <th scope="col">STOCK</th>
+        <th scope="col">PRICE</th>
+        <th scope="col">DESCRIPTION</th>
+
+        <th scope="col">CATEGORY</th>
+
+        <th scope="col">ACTION</th>
+
+
+
+      </tr>
+    </thead>
+    <tbody>
+      <% productdata.forEach((collections, index)=> { %>
+
+        <% if(collections.availability==='true' ){ %>
+
+          <tr>
+            <td>
+              <%= index + 1 %>
+            </td>
+            <td>
+              <%= collections.productname %>
+            </td>
+            <td>
+              <%= collections.stock %>
+            </td>
+            <td>
+              <%= collections.price %>
+            </td>
+            <td>
+              <%= collections.description %>
+            </td>
+            <td>
+              <%= collections.category %>
+            </td>
+
+
+            <td>
+              <% if (collections.availability==='true' ) { %>
+                <form action="/admin/deleteproduct" method="POST" class="btn2" class="form">
+                  <input type="hidden" name="userId" value="<%= collections._id %>">
+                  <button type="button" style="color: white; background-color: red; width: 100px;"
+                    onclick="unlist_product(this.form)">Unlist</button>
+                </form>
+                <% } %>
+
+                  <a href="/admin/updateproduct/<%= collections._id %>" class="text-sucess">
+                    <i class="fas fa-edit fa-lg mx-1"></i>
+                  </a>
+            </td>
+          </tr>
+          <% } %>
+            <% }); %>
+
+
+
+
+    </tbody>
+  </table>
+
+
+
+  <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+  <script>
+    function list_product(form) {
+      swal({
+        title: 'Are you sure?',
+        text: 'You wan to delete!',
+        buttons: true,
+        dangerMode: true
+      }).then((willDelete) => {
+        if (willDelete) {
+          form.submit()
+        }
+      })
+
+    }
+
+    function unlist_product(form) {
+      swal({
+        title: 'Are you sure?',
+        text: 'You want to unlist product!',
+        buttons: true,
+        dangerMode: true
+      }).then((willDelete) => {
+        if (willDelete) {
+          form.submit()
+        }
+      })
+    }
+  </script>
+
+
+  <%- include('../include/adminfooter') -%>

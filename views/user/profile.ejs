@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ShoppeE</title>
+    <link rel="shortcut icon" href="/img/favicon.ico">
+    <link rel="stylesheet" href="/css/profileedit.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+</head>
+
+<body>
+    <div class="container-xl px-4 mt-4">
+        <!-- Account page navigation-->
+        <nav class="nav nav-borders">
+            <a class="nav-link" href="/user/orders">Orders</a>
+            <a class="nav-link " href="/user/wallet">Wallet</a>
+
+            <!-- <a class="nav-link" href="/home/editpassword" target="__blank">Security</a> -->
+            <a class="nav-link" href="/">Home</a>
+        </nav>
+       
+        <hr class="mt-0 mb-4">
+        <div class="row">
+            <div class="col-xl-4">
+                <!-- Profile picture card-->
+                <div class="card mb-4 mb-xl-0">
+                    <div class="card-header"><%= userdata.name %></div>
+                    <div class="card-body text-center">
+                        <!-- Profile picture image-->
+                        <img class="img-account-profile rounded-circle mb-2" src="/img/icons8-male-user-96.png" alt="">
+                    </div>
+                </div>
+                <div style="margin-top: 50px; margin-bottom: 50px;" class="row">
+                    <div class="">
+                      <div class="card">
+                        <div class="card-body">
+                          <h5 class="card-title">Security</h5>
+                          <section style="color:green;" id="passwordlimit1" ></section>
+
+                          <div class="row g-3 align-items-center">
+                            <div class="col-auto">
+                                <label for="inputPassword6" class="col-form-label">Enter old password</label>
+                              <input name="oldpassword" type="password" id="oldpassword" class="form-control" aria-describedby="passwordHelpInline" required>
+                              
+                              <section style="color: red;" id="passwordlimit"></section>
+                            </div>
+                            <div class="col-auto">
+                                <label for="inputPassword7" class="col-form-label">Enter new password</label>
+                                <input name="newpassword" type="password" id="newpassword" class="form-control" aria-describedby="passwordHelpInline" required>
+                                <section style="color: red;" id="invalidpassword"></section>
+                            </div>
+                            <input type="hidden" value="<%= userdata._id %>" id="userId">
+                          </div>
+                          <button type="button" style="margin-top: 30px;" id="button1" class="btn btn-primary">Update</button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+            </div>
+            <div class="col-xl-8">
+                <!-- Account details card-->
+                <div class="card mb-4">
+                    <div class="card-header">Account Details</div>
+                    <div class="card-body">
+                      <% if (successMessage) { %>
+                        <div class="alert alert-success">
+                          <%= successMessage %>
+                        </div>
+                        <script>
+                          setTimeout(function () {
+                            var successMessageDiv = document.querySelector('.alert-success');
+                            if (successMessageDiv) {
+                              successMessageDiv.style.display = 'none';
+                            }
+                          }, 3000); 
+                        </script>
+                        <% } %>
+                        <form action="/user/editprofile/<%= userdata._id %>" method="post" id="form2">
+                            <!-- Form Group (username)-->
+                            <div class="mb-3">
+                                <label class="small mb-1" for="inputUsername">Username</label>
+                                <input name="username" class="form-control" id="name" type="text" value="<%= userdata.username %>" maxlength="20">
+                                <div class="error" style="color:red;"></div>
+
+                            </div>                            
+                            <!-- Form Group (email address)-->
+                            <div class="mb-3">
+                                <label class="small mb-1" for="inputEmailAddress">Email address</label>
+                                <input class="form-control" id="inputEmailAddress" type="email" value="<%= userdata.email %>" readonly>
+                            </div>
+                            <!-- Form Row-->
+                            <div class="row gx-3 mb-3">
+                                <!-- Form Group (phone number)-->
+                                <div class="col-md-6">
+                                    <label class="small mb-1" for="inputPhone">Phone number</label>
+                                    <input name="mobile" class="form-control" id="mobile" type="number" value="<%= userdata.mobile %>" >
+                                    <div class="error" style="color:red;"></div>
+                                  </div>
+                            </div>
+                            <button id="button3" style="margin-top: 20px;" class="btn btn-primary" type="submit">Save</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+<script src="/js/user/editProfile.js"></script>
+
+<script>
+    setTimeout(function() {
+      var alertDiv = document.getElementById('alert');
+      if (alertDiv) {
+        alertDiv.remove();
+      }
+    }, 5000);
+  </script>
+
+  <script>
+document.getElementById('button1').addEventListener('click',()=>{
+    const oldpassword=document.getElementById('oldpassword').value.trim()
+    const userId=document.getElementById('userId').value.trim()
+    const newpassword=document.getElementById('newpassword').value.trim()
+    const invalid=document.getElementById('passwordlimit')
+    const invalid1= document.getElementById('invalidpassword')
+    const correct=document.getElementById('passwordlimit1')
+
+    const url='http://localhost:3000/user/editpassword'
+    fetch(url,{
+        method:'post',
+        headers:{
+            'content-type': 'application/json'
+        },
+        body:JSON.stringify({oldpassword,userId,newpassword})
+    })
+    .then(response=>response.json())
+    .then(data=>{
+        if(data.message=='Password is incorrect'){
+          invalid.innerHTML='Password is incorrect'
+          setTimeout(()=>{
+            invalid.innerHTML='';
+          },2000)
+        }else if(data.message=='Password cannot be empty'){
+          invalid1.innerHTML='Password cannot be empty'
+          setTimeout(()=>{
+            invalid1.innerHTML='';
+          },2000)
+        }else if (data.message==='Should have more than 5 letters'){
+          invalid1.innerHTML='Should have more than 5 letters'
+          setTimeout(()=>{
+            invalid1.innerHTML='';
+          },2000)
+        }else if(data.message=='Password Cannot be same'){
+          invalid1.innerHTML='Password Cannot be same'
+          setTimeout(()=>{
+            invalid1.innerHTML='';
+          },2000)
+        }else if(data.message=='Password changed successfully'){
+          correct.innerHTML='Password changed successfully'
+          document.getElementById('oldpassword').value='';
+          document.getElementById('newpassword').value='';
+          setTimeout(()=>{
+            correct.innerHTML=''
+          },3000)
+        }
+    })
+})
+
+
+  </script>
+
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+</html>

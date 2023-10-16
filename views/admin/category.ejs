@@ -1,0 +1,136 @@
+<%- include('../include/adminheader') -%>
+
+
+
+  <nav>
+    <input type="checkbox" id="check">
+    <label for="check" class="checkbtn">
+      <i class="fas fa-bars"></i>
+    </label>
+
+    <label class="logo">ALL CATEGORIES</label>
+
+    <a href="/admin/addcategory" style="text-decoration: none; color: white;">Add Category</a>
+
+
+    <ul style="margin-right: 160px;">
+      <li>
+
+
+        <!-- <form action="/admin/search" method="post" class="input-group" >
+                  
+                  <input name="username" id="searchInput" class="form-control rounded" placeholder="Search by username" aria-label="Search" aria-describedby="search-addon" />
+                  <button type="submit" class="btn btn-secondary">search</button>
+                </form> -->
+      </li>
+    </ul>
+  </nav>
+  <div>
+    <% if (successMessage) { %>
+      <div class="alert alert-success">
+        <%= successMessage %>
+      </div>
+      <script>
+        setTimeout(function () {
+          var successMessageDiv = document.querySelector('.alert-success');
+          if (successMessageDiv) {
+            successMessageDiv.style.display = 'none';
+          }
+        }, 3000); 
+      </script>
+      <% } %>
+  </div>
+
+  <table style="text-align: center; margin: top -20px;; " class="table table-bordered">
+
+
+    <thead>
+      <tr class="table-dark">
+
+        <th scope="col">NO</th>
+        <th scope="col">NAME</th>
+        <th scope="col">DESCRIPTION</th>
+
+        <th scope="col">ACTION</th>
+
+
+
+      </tr>
+    </thead>
+    <tbody>
+
+
+
+      <% category.forEach((collections, index)=> { %>
+        <% if(collections.availability==='true' ){ %>
+          <tr style="text-align: center;">
+            <td>
+              <%= index + 1 %>
+            </td>
+            <td>
+              <%= collections.category %>
+            </td>
+            <td>
+              <%= collections.description %>
+            </td>
+
+            <td style="position: relative; ">
+              <% if (collections.availability==='false' ) { %>
+                <form action="/admin/" method="POST" class="btn2" class="form">
+                  <input type="hidden" name="userId" value="<%= collections._id %>">
+                  <button type="button" style="color: white; background-color: green; width: 100px;"
+                    onclick="list(this.form)">List</button>
+                </form>
+                <% } else { %>
+                  <form action="/admin/delete" method="POST" class="btn1" class="form">
+                    <input type="hidden" name="userId" value="<%= collections._id %>">
+                    <button type="button" style="color: white; background-color: red; width:100px;"
+                      onclick="unlist(this.form)">Unlist</button>
+                  </form>
+                  <% } %>
+
+                    <a id="<%= collections._id %>" href="/admin/update/<%= collections._id %>" class="text-sucess">
+                      <i class="fas fa-edit fa-lg mx-1"></i>
+            </td>
+          </tr>
+
+          <% } %>
+            <% }); %>
+
+
+    </tbody>
+  </table>
+
+  <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+  <script>
+
+    function unlist(form) {
+      swal({
+        title: 'Are you sure?',
+        text: 'You want to unlist category',
+        buttons: true,
+        dangerMode: true
+      }).then((willDelete) => {
+        if (willDelete) {
+          form.submit()
+        }
+      })
+    }
+    function list(form) {
+      swal({
+        title: 'Are you sure?',
+        text: 'You want to list category!',
+        buttons: true,
+        dangerMode: true
+      }).then((willDelete) => {
+        if (willDelete) {
+          form.submit()
+        }
+      })
+    }
+  </script>
+
+
+
+
+  <%- include('../include/adminfooter') -%>

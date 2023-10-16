@@ -1,0 +1,147 @@
+<%- include('../include/adminheader') -%>
+
+  <body>
+    <!-- <nav style="margin-bottom: -50px;">
+    </nav> -->
+
+    <div >
+      <% if (successMessage) { %>
+        <div class="alert alert-success">
+          <%= successMessage %>
+        </div>
+        <script>
+          setTimeout(function () {
+            var successMessageDiv = document.querySelector('.alert-success');
+            if (successMessageDiv) {
+              successMessageDiv.style.display = 'none';
+            }
+          }, 3000); 
+        </script>
+        <% } %>
+
+
+          <% if (errorMessage) { %>
+            <div class="alert alert-danger">
+              <%= errorMessage %>
+            </div>
+            <script>
+              setTimeout(function () {
+                var errorMessageDiv = document.querySelector('.alert-danger');
+                if (errorMessageDiv) {
+                  errorMessageDiv.style.display = 'none';
+                }
+              }, 3000); 
+            </script>
+            <% } %>
+    </div>
+
+
+    <table style="text-align: center; margin-top: 30px;" class="table table-bordered">
+      <thead>
+        <tr class="table-dark">
+          <th scope="col">NO</th>
+          <th scope="col">NAME</th>
+          <th scope="col">EMAIL</th>
+          <th scope="col">MOBILE</th>
+          <th scope="col">ACTION</th>
+          <th scope="col">MAKE</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% data.forEach((collections, index)=> { %>
+          <% if (collections.admin==false) { %>
+
+            <tr>
+              <td>
+                <%= index + 1 %>
+              </td>
+              <td>
+                <%= collections.username %>
+              </td>
+              <td>
+                <%= collections.email %>
+              </td>
+              <td>
+                <%= collections.mobile %>
+              </td>
+              <td>
+                <% if (collections.blocked===true) { %>
+                  <form action="/admin/unblock" method="POST" class="btn2" class="form">
+                    <input type="hidden" name="userId" value="<%= collections._id %>">
+                    <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#confirmationModal"
+                      data-action="block" data-userid="<%= collections._id %>"
+                      onclick="unblock_user(this.form)">Unblock</button>
+                  </form>
+                  <% } else { %>
+                    <form action="/admin/block" method="POST" class="btn1" class="form">
+                      <input type="hidden" name="userId" value="<%= collections._id %>">
+                      <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#confirmationModal"
+                        data-action="block" data-userid="<%= collections._id %>"
+                        onclick="block_user(this.form)">Block</button>
+                    </form>
+                    <% } %>
+              </td>
+              <td>
+                <form action="/admin/makeadmin" method="POST" class="btn2" class="form">
+                  <input type="hidden" name="userId" value="<%= collections._id %>">
+                  <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#confirmationModal"
+                    data-action="makeadmin" data-userid="<%= collections._id %>" onclick="make_admin(this.form)">Make
+                    Admin</button>
+                </form>
+              </td>
+
+            </tr>
+            <% } %>
+              <% }); %>
+      </tbody>
+    </table>
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+    <script>
+      function block_user(form) {
+        // swal("Hello world!");
+        swal({
+          title: "Are you sure?",
+          text: "You want Block user!",
+          // icon: "warning",
+          buttons: true,
+          dangerMode: true,
+        }).then((willDelete) => {
+          if (willDelete) {
+            form.submit();
+          }
+        });
+      }
+
+      function unblock_user(form) {
+        // swal("Hello world!");
+        swal({
+          title: "Are you sure?",
+          text: "You want UnBlock user!",
+          // icon: "warning",
+          buttons: true,
+          dangerMode: true,
+        }).then((willDelete) => {
+          if (willDelete) {
+            form.submit();
+          }
+        });
+      }
+
+      function make_admin(form) {
+        swal({
+          title: 'Are you sure ?',
+          text: 'You want to make admin!',
+          buttons: true,
+          dangerMode: true
+        }).then((willDelete) => {
+          if (willDelete) {
+            form.submit()
+          }
+        })
+      }
+
+    </script>
+
+
+
+    <%- include('../include/adminfooter') -%>

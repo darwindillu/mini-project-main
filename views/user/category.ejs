@@ -1,0 +1,184 @@
+<%- include('../include/header') -%>
+
+  <style>
+    .card-container {
+      position: relative;
+      padding-top: 20px;
+      overflow: hidden;
+    }
+
+    .card-title {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      /* Limit to two lines */
+      -webkit-box-orient: horizontal;
+    }
+
+    /* Adjust the aspect ratio for circles */
+    .circle-container {
+      position: relative;
+      padding-top: 100%;
+      /* 1:1 aspect ratio (height equals width) */
+      overflow: hidden;
+    }
+
+    .circle-container {
+      position: relative;
+      padding-top: 25%;
+      overflow: hidden;
+    }
+  </style>
+
+<div class="row">
+  
+
+  <!-- BEGIN FILTERS -->
+ 
+
+
+
+  <section style="display: flex; margin-top: -50px; padding: 60px;">
+    <div class="container my-5" >
+      <div class="card-container"  >
+        <div class="row">
+             <% productdata.forEach((collections)=>{ %>
+               
+              <div class="col-lg-3 col-md-6 col-sm-6 d-flex">
+                <div class="card-container img-fluid" >
+                  <div class="card w-100 my-2 shadow-2-strong" style="height: 430px; ">
+                    <div style="display: flex; justify-content:center ;">
+                    <a href="/user/productdetail/<%= collections._id %>">
+                      <img style="height: 230px; width:100%; margin: 0px auto;" class="img-fluid" src="/img/<%= collections.images[0] %>" class="card-img-top"
+                        alt="<%= collections.productname %>" />
+                    </a>
+                    </div>
+                    <div class="card-body d-flex flex-column">
+                      <h5 class="card-title">
+                        <%= collections.productname %>
+                      </h5>
+                      <p class="card-text"><span style="font-weight: bolder; font-size: 20px;">&#8377; <%=
+                            collections.price %></span></p>
+                      <div class="card-footer d-flex align-items-end pt-3 px-0 pb-0 mt-auto">
+                        <a href="/user/addtocart/<%= collections._id %>" class="btn btn-primary shadow-0 me-1">Add to cart</a>
+                        <a href="#!" class="btn btn-light border px-2 pt-2 icon-hover"><i
+                            class="fas fa-heart fa-lg text-secondary px-1"></i></a>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+            <% }) %>
+             
+        </div>
+      </div>
+    </div>
+    <div class="pagination-container">
+      <ul class="pagination">
+        <% if (locals.currentPage > 1) { %>
+          <li class="+-
+          -+9">
+            <a style="text-decoration: none;" href="?page=<%= currentPage - 1 %>">Prev</a>
+          </li>
+        <% } %>
+          <% for (let i = 1; i <= locals.totalPages; i++) { %>
+            <li class="page-item <%= i === currentPage ? 'active' : '' %>">
+              <a class="page-link" href="?page=<%= i %>"><%= i %></a>
+            </li>
+          <% } %>
+        <% if (locals.currentPage < locals.totalPages) { %>
+          <li class="page-item">
+            <a style="text-decoration: none;" href="?page=<%= currentPage + 1 %>">Next</a>
+          </li>
+        <% } %>
+      </ul>
+    </div>
+  </section>
+
+  <section class="mt-5" style="background-color: #f5f5f5;">
+    <div class="container text-dark pt-3">
+      <header class="pt-4 pb-3">
+        <h3>Why choose us</h3>
+      </header>
+
+      <div class="row mb-4">
+        <div class="col-lg-4 col-md-6">
+          <div class="circle-container">
+            <span class="rounded-circle bg-white p-3 d-flex me-2 mb-2">
+              <i class="fas fa-camera-retro fa-fw text-primary"></i>
+            </span>
+            <figcaption class="info">
+              <h6 class="title">Reasonable prices</h6>
+              <p>Affordable Excellence: Top-notch services without breaking the bank.</p>
+            </figcaption>
+          </div>
+        </div>
+        <div class="col-lg-4 col-md-6">
+          <div class="circle-container">
+            <span class="rounded-circle bg-white p-3 d-flex me-2 mb-2">
+              <i class="fas fa-star fa-fw text-primary"></i>
+            </span>
+            <figcaption class="info">
+              <h6 class="title">Best quality</h6>
+              <p>Uncompromising Excellence: We never compromise on quality.</p>
+            </figcaption>
+          </div>
+        </div>
+        <div class="col-lg-4 col-md-6">
+          <div class="circle-container">
+            <span class="rounded-circle bg-white p-3 d-flex me-2 mb-2">
+              <i class="fas fa-plane fa-fw text-primary"></i>
+            </span>
+            <figcaption class="info">
+              <h6 class="title">Worldwide shipping</h6>
+              <p>Global Reach, Local Care: We deliver to your doorstep worldwide.</p>
+            </figcaption>
+          </div>
+        </div>
+        <div class="col-lg-4 col-md-6">
+          <div class="circle-container">
+            <span class="rounded-circle bg-white p-3 d-flex me-2 mb-2">
+              <i class="fas fa-users fa-fw text-primary"></i>
+            </span>
+            <figcaption class="info">
+              <h6 class="title">Customer satisfaction</h6>
+              <p>Your Satisfaction, Our Priority: Your happiness drives us.</p>
+            </figcaption>
+          </div>
+        </div>
+        <div class="col-lg-4 col-md-6">
+          <div class="circle-container">
+            <span class="rounded-circle bg-white p-3 d-flex me-2 mb-2">
+              <i class="fas fa-thumbs-up fa-fw text-primary"></i>
+            </span>
+            <figcaption class="info">
+              <h6 class="title">Happy customers</h6>
+              <p>Join Our Happy Family: Join countless satisfied customers.</p>
+            </figcaption>
+          </div>
+        </div>
+        <div class="col-lg-4 col-md-6">
+          <div class="circle-container">
+            <span class="rounded-circle bg-white p-3 d-flex me-2 mb-2">
+              <i class="fas fa-box fa-fw text-primary"></i>
+            </span>
+            <figcaption class="info">
+              <h6 class="title">Thousand items</h6>
+              <p>Explore Endless Choices: Find your perfect fit among a vast selection.</p>
+            </figcaption>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+ 
+</div>
+</div>
+
+</div>
+
+  <%- include('../include/footer') -%>

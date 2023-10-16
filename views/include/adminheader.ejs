@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>ShoppeE</title>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+
+    <link rel="stylesheet" href="/css/adminhome.css">
+    <link href="/css/attention.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+
+
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <link rel="stylesheet" href="/demo/chartist.css">
+    <link rel="stylesheet" href="/demo/chartist-plugin-tooltip.css">
+
+    <link rel="stylesheet" href="/graindashboard/css/graindashboard.css">
+
+</head>
+
+<body class="has-sidebar has-fixed-sidebar-and-header">
+    <style>
+        .active-nav-icon {
+            color: #5909ec;
+        }
+
+        .active-nav-text {
+            color: #5909ec;
+            font-weight: bold;
+        }
+
+        .active {
+            color: blue;
+        }
+    </style>
+
+    <header class="header bg-body">
+        <nav class="navbar flex-nowrap p-0">
+            <div class="navbar-brand-wrapper d-flex align-items-center col-auto">
+                <p style="font-weight: bolder; font-size: xx-large;  "><span
+                        style="color: green; font-size: 50px;">S</span>hoppe<span style="color: green;">E</span></p>
+            </div>
+
+            <div class="header-content col px-md-3">
+                <div class="d-flex align-items-center">
+                    <!-- End Side Nav Toggle -->
+
+                    <!-- User Notifications -->
+                    <div class="dropdown ml-auto">
+
+                    </div>
+                    <!-- End User Notifications -->
+                    <!-- User Avatar -->
+                    <div class="dropdown mx-3 dropdown ml-2">
+
+                        <a id="profileMenuInvoker" class="header-complex-invoker" href="#" aria-controls="profileMenu"
+                            aria-haspopup="true" aria-expanded="false" data-unfold-event="click"
+                            data-unfold-target="#profileMenu" data-unfold-type="css-animation"
+                            data-unfold-duration="300" data-unfold-animation-in="fadeIn"
+                            data-unfold-animation-out="fadeOut">
+
+                            <span class="d-none d-md-block" style="color: white;">
+                                <%= username %>
+                            </span>
+                            <i class="gd-angle-down d-none d-md-block ml-2"></i>
+                        </a>
+
+                        <ul id="profileMenu"
+                            class="unfold unfold-user unfold-light unfold-top unfold-centered position-absolute pt-2 pb-1 mt-4 unfold-css-animation unfold-hidden fadeOut"
+                            aria-labelledby="profileMenuInvoker" style="animation-duration: 300ms; height:80px ;">
+                            <li class="unfold-item">
+                                <a class="unfold-link d-flex align-items-center text-nowrap" href="/admin/adminprofile"
+                                    style="height: 30px;">
+                                    <span class="unfold-item-icon mr-3">
+                                        <i class="gd-user"></i>
+                                    </span>
+                                    My Profile
+                                </a>
+                            </li>
+                            <li class="unfold-item unfold-item-has-divider">
+                                <a class="unfold-link d-flex align-items-center text-nowrap" href="/admin/adminlogout"
+                                    style="height: 30px;">
+                                    <span class="unfold-item-icon mr-3">
+                                        <i class="gd-power-off"></i>
+                                    </span>
+                                    Log Out
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                    <!-- End User Avatar -->
+                </div>
+            </div>
+        </nav>
+    </header>
+    <main class="main">
+        <!-- Sidebar Nav -->
+        <% if(admin){ %>
+           
+            <aside id="sidebar" class="js-custom-scroll side-nav" style="margin-top: 15px;">
+                <ul id="sideNav" class="side-nav-menu side-nav-menu-top-level mb-0">
+                    <li class="side-nav-menu-item ">
+                        <a class="side-nav-menu-link media align-items-center " href="/admin/home">
+                            <span
+                                class=" side-nav-fadeout-on-closed media-body <%= locals.dest === 'home' ? 'active' : ''%>"
+                                style="font-weight: bolder;">HOME</span>
+                        </a>
+                    </li>
+                    <li class="side-nav-menu-item">
+                        <a class="side-nav-menu-link media align-items-center" href="/admin/user">
+                            <span class=" <%= locals.dest=== 'users' ? 'active' : '' %>"
+                                style="font-weight: bolder;">USERS</span>
+                        </a>
+                    </li>
+                        <li class="side-nav-menu-item">
+                            <a class="side-nav-menu-link media align-items-center" href="/admin/adminpage">
+    
+                                <span class="  <%= locals.dest=== 'admins' ? 'active' : '' %>"
+                                    style="font-weight: bolder;">ADMINS</span>
+                            </a>
+                        </li>
+                            <li class="side-nav-menu-item">
+                                <a class="side-nav-menu-link media align-items-center" href="/admin/product">
+                                    <span
+                                        class="side-nav-fadeout-on-closed media-body  <%= locals.dest=== 'product' ? 'active' : '' %>"
+                                        style="font-weight: bolder;">PRODUCT</span>
+                                </a>
+                            </li>
+                            <li class="side-nav-menu-item">
+                                <a class="side-nav-menu-link media align-items-center " href="/admin/category">
+                                    <span
+                                        class="side-nav-fadeout-on-closed media-body  <%= locals.dest=== 'category' ? 'active' : '' %>"
+                                        style="font-weight: bolder;"> CATEGORY</span>
+                                </a>
+                            </li>
+                            <li class="side-nav-menu-item">
+                                <a class="side-nav-menu-link media align-items-center " href="/admin/getorder">
+                                    <span
+                                        class="side-nav-fadeout-on-closed media-body  <%= locals.dest=== 'order' ? 'active' : '' %>"
+                                        style="font-weight: bolder;"> ORDERS</span>
+                                </a>
+                            </li>
+                </ul>
+            </aside>
+
+        <% }else{ %>
+           
+            <aside id="sidebar" class="js-custom-scroll side-nav" style="margin-top: 15px;">
+                <ul id="sideNav" class="side-nav-menu side-nav-menu-top-level mb-0">
+                    <li class="side-nav-menu-item ">
+                        <a class="side-nav-menu-link media align-items-center " href="/admin/home">
+                            <span
+                                class=" side-nav-fadeout-on-closed media-body <%= locals.dest === 'home' ? 'active' : ''%>"
+                                style="font-weight: bolder;">HOME</span>
+                        </a>
+                    </li>
+                    <li class="side-nav-menu-item">
+                        <a class="side-nav-menu-link media align-items-center" href="/admin/user">
+                            <span class=" <%= locals.dest=== 'users' ? 'active' : '' %>"
+                                style="font-weight: bolder;">USERS</span>
+                        </a>
+                    </li>
+                        
+                            <li class="side-nav-menu-item">
+                                <a class="side-nav-menu-link media align-items-center" href="/admin/product">
+                                    <span
+                                        class="side-nav-fadeout-on-closed media-body  <%= locals.dest=== 'product' ? 'active' : '' %>"
+                                        style="font-weight: bolder;">PRODUCT</span>
+                                </a>
+                            </li>
+                            <li class="side-nav-menu-item">
+                                <a class="side-nav-menu-link media align-items-center " href="/admin/category">
+                                    <span
+                                        class="side-nav-fadeout-on-closed media-body  <%= locals.dest=== 'category' ? 'active' : '' %>"
+                                        style="font-weight: bolder;"> CATEGORY</span>
+                                </a>
+                            </li>
+                            <li class="side-nav-menu-item">
+                                <a class="side-nav-menu-link media align-items-center " href="/admin/getorder">
+                                    <span
+                                        class="side-nav-fadeout-on-closed media-body  <%= locals.dest=== 'order' ? 'active' : '' %>"
+                                        style="font-weight: bolder;"> ORDERS</span>
+                                </a>
+                            </li>
+                </ul>
+            </aside>
+
+        <% } %>
+       

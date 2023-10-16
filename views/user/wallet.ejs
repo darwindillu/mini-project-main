@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ShoppeE</title>
+  <link rel="shortcut icon" href="/img/favicon.ico">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+  </head>
+
+<body>
+  <div class="container-xl px-4 mt-4">
+      <!-- Account page navigation-->
+      <nav class="nav nav-borders">
+          <a class="nav-link ms-0" href="/user/profile/<%= userId %>">Profile</a>
+          <a class="nav-link" href="/user/orders">Orders</a>
+          <!-- <a class="nav-link" href="/home/editpassword" target="__blank">Security</a> -->
+          <a class="nav-link" href="/">Home</a>
+      </nav>
+      <hr class="mt-0 mb-4">
+      <div class="row">
+          <div class="col-xl-4">
+              <!-- Profile picture card-->
+              <div class="card mb-4 mb-xl-0">
+                  <div class="card-header">WALLET</div>
+                  <div class="card-body text-center">
+                    <div class="card text-bg-success mb-3" style="max-width: 20rem;">
+                      <div class="card-body">
+                        <h5 class="card-title">Total Balance</h5>
+                        <h3 class="card-text">&#x20B9; <%= walletbalance %></h3>
+
+                      </div>
+                      <button id="topUpButton" class="btn btn-success" type="button">TOP UP</button>
+                      <form action="/user/topup" method="post" id="form">
+                      <div id="topUpForm" style="display: none;">
+                        <input type="number" id="topUpAmount" class="form-control" name="amount" placeholder="Enter amount" max="7">
+                        <div class="error" style="color:white;"></div>
+                        <button id="button1" class="btn btn-primary mt-2" type="button">Submit</button>
+                      </div>
+                      </form>
+
+                    </div>
+
+                      <!-- Profile picture image-->
+                      <!-- <img class="img-account-profile rounded-circle mb-2" src="public/img/icons8-male-user-96.png" alt=""> -->
+                  </div>
+              </div>   
+          </div>
+          
+
+          <div class="col-xl-8">
+            <div class="col-12">
+              <div class="card h-100 mb-4">
+                <div class="card-header pb-0 px-3">
+                  <div class="row">
+                    <div class="col-md-6">
+                      <h6 class="mb-2">Your Transaction's</h6>
+                    </div>
+                    <div class="card-body pt-4 p-3">
+                      <ul style="max-height: 600px; overflow-y: auto;" class="list-group">
+                        <% wallet.forEach((data)=>{ %>
+                          <% if(data.process==='Refund'){ %>
+                            <li class="list-group-item border-0 d-flex justify-content-between ps-0 mb-2 border-radius-lg">
+                              <div class="d-flex align-items-center">
+                                <button class="btn btn-icon-only btn-rounded btn-outline-success mb-0 me-3 btn-sm d-flex align-items-center justify-content-center"><i class="fas fa-arrow-up"></i></button>
+                                <div class="d-flex flex-column">
+                                  <h6 class="mb-1 text-dark text-sm"><%= data.productname %></h6>
+                                  <span class="text-xs"><%= data.Date%></span>
+                                </div>
+                              </div>
+                              <div class="d-flex align-items-center text-success text-gradient text-sm font-weight-bold">
+                                + &#x20B9; <%= data.amount%>
+                              </div>                
+                            </li>
+                            <hr>  
+
+                        <% } else if (data.process==='TopUp'){ %>
+                          <li class="list-group-item border-0 d-flex justify-content-between ps-0 mb-2 border-radius-lg">
+                            <div class="d-flex align-items-center">
+                              <button class="btn btn-icon-only btn-rounded btn-outline-success mb-0 me-3 btn-sm d-flex align-items-center justify-content-center"><i class="fas fa-arrow-up"></i></button>
+                              <div class="d-flex flex-column">
+                                <h6 class="mb-1 text-dark text-sm">Amount Added To Wallet</h6>
+                                <span class="text-xs"><%= data.Date%></span>
+                              </div>
+                            </div>
+                            <div class="d-flex align-items-center text-success text-gradient text-sm font-weight-bold">
+                              + &#x20B9; <%= data.amount%>
+                            </div>                
+                          </li>
+                          <hr>  
+
+                       <% }else if(data.process==='Ordered'){ %>
+                      <li class="list-group-item border-0 d-flex justify-content-between ps-0 mb-2 border-radius-lg">
+                        <div class="d-flex align-items-center">
+                              <button class="btn btn-icon-only btn-rounded btn-outline-danger mb-0 me-3 btn-sm d-flex align-items-center justify-content-center"><i class="fas fa-arrow-down"></i></button>
+                          <div class="d-flex flex-column">
+                            <h6 class="mb-1 text-dark text-sm"><%= data.productname %></h6>
+                            <span class="text-xs"><%= data.Date %></span>
+                          </div>
+                        </div>
+                        <div class="d-flex align-items-center text-danger text-gradient text-sm font-weight-bold">
+                          - &#x20B9; <%= data.amount %>
+                        </div>
+                      </li>
+                      <hr>
+
+                       <% } %>
+
+                       <% }) %>
+                           
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+               
+              </div>
+            </div>
+          </div>
+      </div>
+  </div>
+
+  <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+
+  <script>
+    const topUpButton = document.getElementById('topUpButton');
+    const topUpForm = document.getElementById('topUpForm');
+  
+    topUpButton.addEventListener('click', function () {
+      if (topUpForm.style.display === 'none' || topUpForm.style.display === '') {
+        topUpForm.style.display = 'block';
+      } else {
+        topUpForm.style.display = 'none';
+      }
+    });
+  </script>
+
+  <script>
+
+function topUpWallet() {
+
+const amount=document.getElementById('topUpAmount').value.trim()
+
+if (!amount) {
+    const errorElement = document.querySelector('.error');
+    errorElement.textContent = 'Please enter an amount.';
+    setTimeout(()=>{
+  errorElement.textContent=''
+},3000)
+    return; 
+  }else if (amount <=0) {
+    const errorElement = document.querySelector('.error');
+    errorElement.textContent = 'Cannot Be Negative';
+    setTimeout(()=>{
+  errorElement.textContent=''
+},3000)
+    return; 
+  }
+
+
+
+
+const url = 'http://localhost:3000/user/topUp'
+
+
+fetch(url,{
+          method : 'post',
+          headers : {
+              'Content-Type' : 'application/json'
+          },
+          body : JSON.stringify({amount})
+      })
+      .then(response => response.json())
+      .then(data =>{
+        console.log(data.order.id);
+        
+          const options = {
+          "key": "rzp_test_u0UiLVVislYpTf", // Enter the Key ID generated from the Dashboard
+          "amount": data.order.amount, // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
+          "currency": "INR",
+          "name": 'ShoppeE Wallet', //your business name
+          "description": "Test Transaction",
+          "image": "",
+          "order_id": data.order.id, //This is a sample Order ID. Pass the `id` obtained in the response of Step 1
+          "callback_url": `http://localhost:3000/user/topUpDone?data=${data}&amount=${JSON.stringify(amount)}`,
+          "prefill": { //We recommend using the prefill parameter to auto-fill customer's contact information especially their phone number
+              "name": data.username, //your customer's name
+              "email": data.email,
+              "contact": data.mobile //Provide the customer's phone number for better conversion rates 
+          },
+          "notes": {
+              "address": "Razorpay Corporate Office"
+          },
+          "theme": {
+              "color": "#3399cc"
+          }
+      };
+      const rzp1 = new Razorpay(options);
+      rzp1.open();
+      })
+  }
+
+
+      document.getElementById('button1').addEventListener('click',()=>{
+        topUpWallet()
+      });
+
+
+  </script>
+
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+</body>
+
+</html>

@@ -1,0 +1,142 @@
+<%- include('../include/mainhead') -%>
+
+  <style>
+    .card-container {
+      position: relative;
+      padding-top: 20px;
+      overflow: hidden;
+    }
+
+    .card-title {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      /* Limit to two lines */
+      -webkit-box-orient: horizontal;
+    }
+
+    /* Adjust the aspect ratio for circles */
+    .circle-container {
+      position: relative;
+      padding-top: 100%;
+      /* 1:1 aspect ratio (height equals width) */
+      overflow: hidden;
+    }
+
+    .circle-container {
+      position: relative;
+      padding-top: 25%;
+      overflow: hidden;
+    }
+  </style>
+
+
+<% if (successMessage) { %>
+  <div class="alert alert-success">
+    <%= successMessage %>
+  </div>
+  <script>
+    setTimeout(function () {
+      var successMessageDiv = document.querySelector('.alert-success');
+      if (successMessageDiv) {
+        successMessageDiv.style.display = 'none';
+      }
+    }, 3000); 
+  </script>
+  <% } %>
+
+  <section style="display: flex;">
+    <div class="container my-5">
+      <header class="mb-4">
+        <h3>NEW PRODUCTS</h3>
+      </header>
+      <div class="container my-5">
+        <div class="card-container">
+          <div class="row">
+            <% productdata.forEach((collections, index)=> { %>
+              <% if(collections.availability==='true' ) { %>
+                <div class="col-lg-3 col-md-6 col-sm-6 d-flex">
+                  <div class="card-container">
+                    <div class="card w-100 my-2 shadow-2-strong" style="height: 430px;">
+                      <div style="display: flex; justify-content: center;">
+                      <a href="/user/productdetail/<%= collections._id %>">
+                        <img style="height: 200px; width:fit-content; margin: 0px auto;" src="/img/<%= collections.images[0] %>" class="card-img-top"
+                          alt="<%= collections.productname %>" />
+                      </a>
+                      </div>
+                      <div class="card-body d-flex flex-column">
+                        <h5 class="card-title">
+                          <%= collections.productname %>
+                        </h5>
+                        <p class="card-text"><span style="font-weight: bolder; font-size: 20px;">&#8377; <%=
+                              collections.price %></span></p>
+                        <div class="card-footer d-flex align-items-end pt-3 px-0 pb-0 mt-auto">
+                          <a href="/user/addtocart/<%= collections._id %>" class="btn btn-primary shadow-0 me-1">Add to cart</a>
+                          <a href="#!" class="btn btn-light border px-2 pt-2 icon-hover"><i
+                              class="fas fa-heart fa-lg text-secondary px-1"></i></a>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <% } %>
+                  <% }); %>
+          </div>
+        </div>
+      </div>
+  </section>
+  <!-- Products -->
+
+  <!-- Features -->
+
+  <!-- Features -->
+
+  <!-- Recommended -->
+  <section>
+    <div class="container my-5">
+      <header class="mb-4">
+        <h3>Recommended</h3>
+      </header>
+      <div class="container my-5">
+        <div class="card-container">
+          <div class="row">
+            <% productdata1.forEach((collections, index)=> { %>
+              <% if(collections.availability==='true' ) { %>
+                <div class="col-lg-3 col-md-6 col-sm-6 d-flex">
+                  <div class="card-container">
+                    <div class="card w-100 my-2 shadow-2-strong" style="height: 430px;">
+                      <div style="display: flex; justify-content: center;">
+                      <a href="/user/productdetail/<%= collections._id %>">
+                        <img style="height: 200px; width: fit-content; margin: 0px auto;" src="/img/<%= collections.images[0] %>" class="card-img-top"
+                          alt="<%= collections.productname %>" />
+                      </a>
+                      </div>
+                      <div class="card-body d-flex flex-column">
+                        <h5 class="card-title">
+                          <%= collections.productname %>
+                        </h5>
+                        <p class="card-text"><span style="font-weight: bolder; font-size: 20px;">&#8377; <%=
+                              collections.price %></span></p>
+                        <div class="card-footer d-flex align-items-end pt-3 px-0 pb-0 mt-auto">
+                          <a href="#!" class="btn btn-primary shadow-0 me-1">Add to cart</a>
+                          <a href="#!" class="btn btn-light border px-2 pt-2 icon-hover"><i
+                              class="fas fa-heart fa-lg text-secondary px-1"></i></a>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <% } %>
+                  <% }); %>
+          </div>
+        </div>
+
+
+      </div>
+  </section>
+  <!-- Recommended -->
+
+  <!-- Footer -->
+  <%- include('../include/footer') -%>

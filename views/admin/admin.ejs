@@ -1,0 +1,103 @@
+<%- include('../include/adminheader') -%>
+
+  <div>
+    <% if (successMessage) { %>
+      <div class="alert alert-success">
+        <%= successMessage %>
+      </div>
+      <script>
+        setTimeout(function () {
+          var successMessageDiv = document.querySelector('.alert-success');
+          if (successMessageDiv) {
+            successMessageDiv.style.display = 'none';
+          }
+        }, 3000); 
+      </script>
+      <% } %>
+        <% if (errorMessage) { %>
+          <div class="alert alert-danger">
+            <%= errorMessage %>
+          </div>
+          <script>
+            setTimeout(function () {
+              var errorMessageDiv = document.querySelector('.alert-danger');
+              if (errorMessageDiv) {
+                errorMessageDiv.style.display = 'none';
+              }
+            }, 3000); 
+          </script>
+          <% } %>
+  </div>
+  <table style="text-align: center; margin-top: 30px;" class="table table-bordered">
+    <thead>
+      <tr class="table-dark">
+
+        <th scope="col">NO</th>
+        <th scope="col">NAME</th>
+        <th scope="col">EMAIL</th>
+        <th scope="col">MOBILE</th>
+        <th scope="col">ACTION</th>
+
+      </tr>
+    </thead>
+    <tbody style="height: 100px;">
+
+
+      <% data.forEach((collections, index)=> { %>
+        <% if(collections.admin===true && collections.superAdmin===false) { %>
+
+          <tr>
+            <td>
+              <%= index + 1 %>
+            </td>
+            <td>
+              <%= collections.username %>
+            </td>
+            <td>
+              <%= collections.email %>
+            </td>
+            <td>
+              <%= collections.mobile %>
+            </td>
+
+            <td>
+              <form action="/admin/removeadmin" method="POST" class="btn2" class="form">
+                <input type="hidden" name="userId" value="<%= collections._id %>">
+                <button type="button" style="color: white; background-color: red; width: 100px;"
+                  onclick="remove_admin(this.form)">Remove Admin</button>
+              </form>
+            </td>
+          </tr>
+          <% } %>
+            <% }); %>
+
+
+
+    </tbody>
+  </table>
+
+
+  <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+
+  <script>
+
+    function remove_admin(form) {
+      // swal("Hello world!");
+      swal({
+        title: "Are you sure?",
+        text: "You want remove admin!",
+        // icon: "warning",
+        buttons: true,
+        dangerMode: true,
+      }).then((willDelete) => {
+        if (willDelete) {
+          form.submit();
+        }
+      });
+    }
+    
+  </script>
+
+
+  </main>
+  <%- include('../include/adminfooter') -%>

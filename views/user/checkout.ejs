@@ -1,0 +1,454 @@
+<%- include('../include/partial') -%>
+
+<form action="/user/save" method="post" id="addressform">
+    <button type="button" style="margin-left: 120px; margin-bottom: 10px;" class="btn btn-primary" onclick="toggleAddressForm()" id="addressForm">ADD NEW ADDRESS</button>
+    <div id="newAddressForm" style="display: none; width: 800px; margin-left: 120px;">
+        <div class="row">
+            <div class="col-sm-8 mb-3">
+                <div class="form-outline">
+                    <input  id="address" value="" class="form-control" name="address" placeholder="Address" maxlength="70"/>
+                    <div class="error" style="color:red;"></div>
+                </div>
+            </div>
+            <div class="col-sm-4 mb-3">
+                <div class="form-outline">
+                    <input  type="text" id="city" value="" class="form-control" name="city" placeholder="City" maxlength="30"/>
+                    <div class="error" style="color:red;"></div>
+                </div>
+            </div>
+            <div class="col-sm-4 mb-3">
+                <div class="form-outline">
+                    <input  type="text" id="district" value="" class="form-control" name="district" placeholder="District" maxlength="35"/>
+                    <div class="error" style="color:red;"></div>
+                </div>
+            </div>
+            <div class="col-sm-4 col-6 mb-3">
+                <div class="form-outline">
+                    <input type="number" id="pincode" class="form-control" value=""  name="pincode" placeholder="Pincode" maxlength="6"/>
+                    <div class="error" style="color:red;"></div>
+                </div>
+            </div>
+            <div class="col-sm-4 col-6 mb-3">
+                <div class="form-outline">
+                    <input type="number" id="mobile" class="form-control" value=""  name="mobile" placeholder="Mobile" maxlength="12"/>
+                    <div class="error" style="color:red;"></div>
+                </div>
+            </div>
+        </div>
+        <button type="submit" class="btn btn-success" >Save Address</button>
+    </div>
+    </form>
+<form action="/user/success">
+
+<section class="bg-light py-5">
+    <div class="container">
+        <div class="row">
+            <div class="col-xl-8 col-lg-8 mb-4">
+                <div class="card shadow-0 border">
+                    <div class="p-4">
+                        <% address.forEach((data,index)=>{ %>
+                            <div class="col-xl-8 col-lg-8 mb-4">
+                                <div class="card shadow-0 border">
+                                    <div class="p-4">
+                                        <h5 class="card-title mb-3">Address <%= index + 1 %> </h5>
+                                        <div class="row">
+                                            <div class="col-sm-8 mb-3">
+                                                <div class="form-outline">
+                                                    <input readonly id="typeText" value="<%= data.address %>" class="form-control" name="address"  />
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-4 mb-3">
+                                                <div class="form-outline">
+                                                    <input readonly type="text" id="typeText" value="<%= data.city %>" class="form-control" name="city" />
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-4 mb-3">
+                                                <div class="form-outline">
+                                                    <input readonly type="text" id="typeText" value="<%= data.district %>" class="form-control" name="district" />
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-4 col-6 mb-3">
+                                                <div class="form-outline">
+                                                    <input type="number" id="typeText" class="form-control" value="<%= data.pincode %>" readonly name="pincode" />
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-4 col-6 mb-3">
+                                                <div class="form-outline">
+                                                    <input type="number" id="typeText" class="form-control" value="<%= data.mobile %>" readonly name="mobile" />
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="form-check">
+                                            <input
+                                                style="background-color: black;"
+                                                type="radio"
+                                                class="form-check-input"
+                                                id="addressRadio<%= index %>"
+                                                name="selectedAddress"
+                                                value="<%= data._id %>"/>
+                                            <label class="form-check-label" for="addressRadio<%= index %>"><i style="font-weight: bold;">Select this address</i></label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        <% }) %>
+                       
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Right-side summary and payment method -->
+            <div class="col-xl-4 col-lg-4 d-flex justify-content-center justify-content-lg-end">
+                <div class="ms-lg-4 mt-4 mt-lg-0" style="max-width: 320px;">
+                    <h6 class="mb-3">Summary</h6>
+                    <div class="d-flex justify-content-between">
+                        <p class="mb-2">Total Cart: </p>
+                        <p class="mb-2">&#8377;<%= total %></p>
+                    </div>
+                    <!-- <div class="d-flex justify-content-between">
+                        <p class="mb-2">Discount:</p>
+                        <p class="mb-2 text-danger">- $60.00</p>
+                    </div> -->
+                    <div class="d-flex justify-content-between">
+                        <p class="mb-2">Shipping cost:</p>
+                        <p class="mb-2">+ &#8377;40.00</p>
+                    </div>
+                    <hr />
+                    <div class="d-flex justify-content-between">
+                        <p class="mb-2">Total price:</p>
+                        <p class="mb-2 fw-bold">&#8377;<span class="grandTotal"><%= total + 40 %></span></p>
+                    </div>
+
+                    <!-- <div class="input-group mt-3 mb-4">
+                        <input type="text" class="form-control border" name="" placeholder="Promo code" />
+                        <button class="btn btn-light text-primary border">Apply</button>
+                    </div> -->
+                    <% cartItems.forEach((data)=>{ %>
+                    <hr />
+                    <h6 class="text-dark my-4">Items in cart</h6>
+                    <div class="d-flex align-items-center mb-4 product-row">
+                        <div class="me-3 position-relative">
+                            <span
+                                class="position-absolute top-0 start-100 translate-middle badge rounded-pill badge-secondary">
+                                1
+                            </span>
+                            <img src="/img/<%= data.images[0] %>"
+                                style="height: 96px; width: 96px;" class="img-sm rounded border" />
+                        </div>
+                        <div class="">
+                            <a href="#" class="nav-link product-name">
+                                 <%= data.productname %>
+                            </a>
+                            <div hidden class="product-price"><%= data.productprice %></div>
+                            <div class="price text-muted">Quantity:<span class="product-quantity" style="color: black; text-decoration: none;"><%= data.quantity %></span></div>
+                            <div class="price text-muted ">Price:&#8377;<span style="color: black;text-decoration: none;"><%= data.realPrice %></span></div>
+                        </div>
+                    </div>
+                    <% }) %>
+                    <div style="color: red;" id="stockErrorMessage">
+                        <a href="/user/cart" style="font-weight: bolder; text-decoration: none;">Go to Cart</a>
+                      </div>
+
+                    <div class="form-check">
+                        <input
+                        style="background-color: black;"
+                            type="radio"
+                            class="form-check-input"
+                            id="paymentCOD"
+                            name="paymentMethod"
+                            value="cod"
+                            required/>
+                        <label class="form-check-label" for="paymentCOD" style="font-weight: bold;">Cash on Delivery</label>
+
+                    </div>
+                    <div class="form-check">
+                        <input
+                        style="background-color: black;"
+                            type="radio"
+                            class="form-check-input"
+                            id="paymentBanking"
+                            name="onlinepayment"
+                            value="banking"
+                        />
+                        <label class="form-check-label" for="paymentBanking" style="font-weight: bold;">Internet Banking</label>
+                    </div>
+                    <div class="form-check">
+                        <input
+                        style="background-color: black;"
+                            type="radio"
+                            class="form-check-input"
+                            id="paymentWallet"
+                            name="paymentWallet"
+                            value="wallet"
+                        />
+                        <label class="form-check-label" for="paymentWallet" style="font-weight: bold;">Wallet</label>
+                    </div>
+                    <section style="color: red;" id="passwordlimit"></section>
+
+
+                    <!-- Other Payment Options (e.g., Credit Card, PayPal, etc.) -->
+                    <!-- ... -->
+
+                    <!-- Checkout Button -->
+                    <button type="button" id="button1" class="btn btn-success shadow-0 border" style="margin-left: 20px; margin-top: 10px;" >Place Order</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+</form>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"
+integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm"
+crossorigin="anonymous"></script>
+<script src="/js/user/addressvalidation.js"></script>
+
+<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+<script>
+  document.getElementById('button1').addEventListener('click', placeOrder);
+
+  function placeOrder(e) {
+    e.preventDefault()
+
+    const cashondelivery=document.getElementById('paymentCOD')
+    const onlinepayment= document.getElementById('paymentBanking')
+    const walletpayment= document.getElementById('paymentWallet')
+
+
+    
+  function collectProductData() {
+    const productData = []; 
+    const productRows = document.querySelectorAll('.product-row');
+
+    productRows.forEach((row) => {
+      const productName = row.querySelector('.product-name').textContent.trim();
+      const quantity = parseInt(row.querySelector('.product-quantity').textContent.trim());
+      const price = parseInt(row.querySelector('.product-price').textContent.trim())
+      productData.push({ productName, quantity,price });
+    });
+
+    return productData;
+  }
+
+  function collectFormData() {
+    const selectedAddress = document.querySelector('input[name="selectedAddress"]:checked').value;
+    const paymentMethod = document.querySelector('input[name="paymentMethod"]:checked').value;
+    
+
+    return {
+      selectedAddress,
+      paymentMethod
+    };
+  }
+
+  if(cashondelivery.checked){
+       
+    const data1 = collectProductData();
+    const data = collectFormData();
+    const grandtotal = document.querySelector('.grandTotal').textContent.trim();
+
+    console.log(data1, data, grandtotal);
+    
+    fetch('/user/success', {
+     method: 'POST',
+     headers: {
+       'Content-Type': 'application/json',
+     },
+     body: JSON.stringify({ data, data1, grandtotal }),
+    })
+    .then((response) => response.json())
+        .then((responseData) => {
+          if (responseData.message === 'Out Of Stock') {
+            // Display an error message with a link to go to the cart
+            const stockErrorMessage = document.getElementById('stockErrorMessage');
+            stockErrorMessage.innerHTML = 'The selected quantity exceeds the available stock. Please ';
+            const cartLink = document.createElement('a');
+            cartLink.href = '/cart';
+            cartLink.textContent = 'Go to Cart';
+            stockErrorMessage.appendChild(cartLink);
+          } else {
+            console.log('Order placed:', responseData);
+            window.location.href = '/user/successpage';
+          }
+        })
+        .catch((error) => {
+          console.error('Error placing order:', error);
+        });
+    }
+    
+    
+     else if (onlinepayment.checked) {
+        let selectedAddress = null;
+const radioButtons = document.querySelectorAll('input[name="selectedAddress"]');
+for (const radioButton of radioButtons) {
+  if (radioButton.checked) {
+    selectedAddress = radioButton.value;
+    break; // Exit the loop once a checked radio button is found
+  }
+}
+                console.log('Online payment selected');
+                if(selectedAddress){
+
+                    const url = 'http://localhost:3000/user/payorder'
+                    const productData = []; 
+    const productRows = document.querySelectorAll('.product-row');
+
+    productRows.forEach((row) => {
+      const productName = row.querySelector('.product-name').textContent.trim();
+      const quantity = parseInt(row.querySelector('.product-quantity').textContent.trim());
+      const price = parseInt(row.querySelector('.product-price').textContent.trim())
+
+      productData.push({ productName, quantity ,price});
+    });
+                     const grandtotal = document.querySelector('.grandTotal').textContent.trim();
+                     console.log(productData,selectedAddress, grandtotal);
+                    const totalamount = document.querySelector('.grandTotal').textContent.trim();
+                    const payment = 'ONLINE'
+    
+    
+                    fetch(url,{
+                        method : 'post',
+                        headers : {
+                            'Content-Type' : 'application/json'
+                        },
+                        body : JSON.stringify({totalamount,productData})
+                    })
+                    .then((response) => response.json())
+    .then((responseData) => {
+        console.log(responseData);
+      if (responseData.message =='Out Of Stock') {
+        // Display an error message with a link to go to the cart
+        const stockErrorMessage = document.getElementById('stockErrorMessage');
+        stockErrorMessage.innerHTML =
+          'The selected quantity exceeds the available stock ';
+        const cartLink = document.createElement('a');
+        cartLink.href = '/user/cart';
+        cartLink.textContent = 'Go to Cart';
+        stockErrorMessage.appendChild(cartLink);
+      } else {
+        // Handle the Razorpay payment process
+        const options = {
+          key: 'rzp_test_u0UiLVVislYpTf',
+          amount: responseData.order.amount, // Amount is in currency subunits. Default currency is INR.
+          currency: 'INR',
+          name: responseData.name,
+          description: 'Test Transaction',
+          image: '',
+          order_id: responseData.order.id,
+          callback_url: `http://localhost:3000/user/paymentdone?productData=${JSON.stringify(productData)}&selectedAddress=${JSON.stringify(selectedAddress)}&grandtotal=${grandtotal}`,
+          prefill: {
+            // Pre-fill customer's contact information here
+          },
+          notes: {
+            address: 'Razorpay Corporate Office',
+          },
+          theme: {
+            color: '#3399cc',
+          },
+        };
+
+        const rzp1 = new Razorpay(options);
+        rzp1.open();
+      }
+    });
+}         
+                }else if(walletpayment.checked){
+                    let selectedAddress = null;
+                    const invalid= document.getElementById('passwordlimit')
+const radioButtons = document.querySelectorAll('input[name="selectedAddress"]');
+for (const radioButton of radioButtons) {
+  if (radioButton.checked) {
+    selectedAddress = radioButton.value;
+    break; // Exit the loop once a checked radio button is found
+  }
+}
+                console.log('Wallet payment selected');
+                if(selectedAddress){
+
+                    
+                    const productData = []; 
+    const productRows = document.querySelectorAll('.product-row');
+
+    productRows.forEach((row) => {
+      const productName = row.querySelector('.product-name').textContent.trim();
+      const quantity = parseInt(row.querySelector('.product-quantity').textContent.trim());
+      const price = parseInt(row.querySelector('.product-price').textContent.trim())
+      productData.push({ productName, quantity,price });
+    });
+                     const grandtotal = document.querySelector('.grandTotal').textContent.trim();
+                     console.log(productData,selectedAddress, grandtotal);
+                    const totalamount = document.querySelector('.grandTotal').textContent.trim();
+                    const payment = 'Wallet'
+                     
+                    fetch('/user/wallet', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ selectedAddress, productData, grandtotal }),
+  })
+  .then((response) => response.json())
+  .then((responseData) => {
+    console.log('Order placed:', responseData);
+    if (responseData.message === 'insufficient wallet balance') {
+        invalid.innerHTML='insufficient wallet balance'
+
+        setTimeout(()=>{
+            invalid.innerHTML=''
+        },3000)
+
+    }else if(responseData.message ==='Out Of Stock'){
+      const stockErrorMessage = document.getElementById('stockErrorMessage');
+        stockErrorMessage.innerHTML =
+          'The selected quantity exceeds the available stock ';
+        const cartLink = document.createElement('a');
+        cartLink.href = '/user/cart';
+        cartLink.textContent = 'Go to Cart';
+        stockErrorMessage.appendChild(cartLink);
+    } else {
+      window.location.href = '/user/successpage';
+    }
+  })
+  .catch((error) => {
+    console.error('Error placing order:', error);
+  });
+}}}
+  
+
+ 
+
+   
+  
+
+
+  
+
+
+
+</script>
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+
+<script>
+  function toggleAddressForm() {
+    const addressForm = document.getElementById('newAddressForm');
+    if (addressForm.style.display === 'none' || addressForm.style.display === '') {
+      addressForm.style.display = 'block';
+    } else {
+      addressForm.style.display = 'none';
+    }
+  }
+
+  function success(form) {
+    swal({
+      title: 'Are you sure?',
+      text: 'You want to confirm the order',
+      buttons: true,
+      dangerMode: true,
+    }).then((willDelete) => {
+      if (willDelete) {
+        form.submit();
+      }
+    });
+  }
+</script>
+
+<%- include('../include/footer') -%>

@@ -50,5 +50,6 @@ router.post('/editReview/:id/:rid', postEditReview)
 router.get('/deleteReview/:id/:rid', deleteReview)
 router.post('/topup', topUp)
 router.post('/topupdone', topUpDone)
+router.get('/samble')
 
 module.exports = router

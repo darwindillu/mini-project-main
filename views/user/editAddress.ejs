@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ShoppeE</title>
+  <link rel="shortcut icon" href="/img/favicon.ico">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
+</head>
+<body style="padding: 80px;">
+    <div class="col-xl-8">
+        <div class="card mb-4" >
+            <div class="card-header">EDIT ADDRESS</div>
+            <div class="card-body">
+              <% Address.forEach((data,index)=>{ %>
+                <form action="/user/postEditAddress/<%= data._id %>" method="post" id="addressform">
+                    <div class="mb-3">
+                        <label class="small mb-1" for="inputUsername">Address</label>
+                        <input name="address" class="form-control" id="address" type="text" value="<%= data.address %>" maxlength="20">
+                        <div class="error" style="color:red;"></div>
+
+                    </div>                            
+                    <div class="row gx-3 mb-3">
+                        <div class="col-md-6">
+                            <label class="small mb-1" for="inputEmailAddress">City</label>
+                            <input class="form-control" id="city" type="text" value="<%= data.city %>" name="city">
+                            <div class="error" style="color:red;"></div>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="small mb-1" for="inputPhone">District</label>
+                            <input name="district" class="form-control" id="district" type="text" value="<%= data.district %>" >
+                            <div class="error" style="color:red;"></div>
+                        </div>
+                    </div>
+                    <div class="row gx-3 mb-3">
+                        <div class="col-md-6">
+                            <label class="small mb-1" for="inputEmailAddress">Mobile</label>
+                            <input class="form-control" id="mobile" type="number" value="<%= data.mobile %>" name="mobile">
+                            <div class="error" style="color:red;"></div>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="small mb-1" for="inputPhone">Pincode</label>
+                            <input name="pincode" class="form-control" id="pincode" name="pincode" type="number" value="<%= data.pincode %>" >
+                            <div class="error" style="color:red;"></div>
+                        </div>
+                    </div>
+                    <button id="button3" style="margin-top: 20px;" class="btn btn-primary" type="submit">Save</button>
+                </form>
+            <% }) %>
+            </div>
+        </div>
+    </div>
+    <script src="/js/user/addressvalidation.js"></script>
+</body>
+</html>

@@ -88,11 +88,12 @@
                             </div>
                           </div>
                         </div>
-                        <div class="form-check">
+                        <button type="button" class="edit-button btn btn-primary" data-id="<%= data._id %>">Edit</button>                        <div class="form-check" style="margin-top: 5px;">
                           <input style="background-color: black;" type="radio" class="form-check-input"
                             id="addressRadio<%= index %>" name="selectedAddress" value="<%= data._id %>" />
                           <label class="form-check-label" for="addressRadio<%= index %>"><i
                               style="font-weight: bold;">Select this address</i></label>
+                              <input type="hidden" value="<%= data._id %>">
                         </div>
                       </div>
                     </div>
@@ -166,10 +167,10 @@
                     </div> -->
               <div class="d-flex justify-content-between">
                 <p class="mb-2">Shipping cost:</p>
-                <p class="mb-2">+ &#8377;40.00</p>
+                <p class="mb-2"> &#8377;40.00</p>
               </div>
               <div class="d-flex justify-content-between">
-                <li id="coupenadded"><span> </span></li>
+                <li style="list-style-type: none;" id="coupenadded"><span></span></li>
                 <div id="clear"></div>
                 <section hidden id="discount1"></section>
                 <section hidden id="coupenid"></section>
@@ -510,7 +511,6 @@
       let coupenadded = document.getElementById('coupenadded')
       let discount = document.getElementById('discount')
       let total1 = document.getElementById('grandtotal1');
-          // total1 = parseFloat(total1.textContent.trim().replace('₹', ''));
       const url = 'http://localhost:3000/user/verifyCoupon'
 
 
@@ -572,6 +572,17 @@
           }
       })
   })
+
+</script>
+
+<script>
+
+document.querySelectorAll('.edit-button').forEach(button => {
+  button.addEventListener('click', function () {
+    const id = this.getAttribute('data-id');
+    window.location.href = '/user/editAddress/' + id;
+  });
+});
 
 </script>
 

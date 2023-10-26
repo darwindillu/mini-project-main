@@ -35,6 +35,10 @@ app.get('/500', (req, res) => {
     res.status(500).render('user/page500')
 })
 
+app.use((req,res)=>{
+   res.render('404')
+})
+
 app.listen(3000, () => {
     console.log('Listening to http://localhost:3000');
 })

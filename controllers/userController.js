@@ -1366,6 +1366,62 @@ const saveAddress = async (req, res) => {
   }
 }
 
+// Edit address
+
+const editAddress= async(req,res)=>{
+  try{
+
+    const id = req.params.id
+    const user= req.session.user
+    const userDocument = await registercollection.findOne({ email: user, 'Address._id': id });
+    const Address= userDocument.Address
+    console.log(Address);
+
+    res.status(200).render('user/editAddress',{Address})
+  }catch(error){
+    console.error(error)
+    res.redirect('/500')
+  }
+}
+
+// Post Edit Address
+
+const postEditAddress = async (req, res) => {
+  try{
+
+    const addressId = req.params.id; 
+    console.log(addressId);
+    const user1 = req.session.user; 
+  
+    const update = {
+      address: req.body.address,
+      city: req.body.city,
+      district: req.body.district,
+      pincode: req.body.pincode,
+      mobile: req.body.mobile,
+    };
+  
+    const user = await registercollection.findOne({ email: user1 });
+  
+    // Find the specific address within the Address array.
+    const addressToUpdate = user.Address.id(addressId);
+  
+    if (addressToUpdate) {
+      // Update the address fields.
+      addressToUpdate.set(update);
+  
+      // Save the user document with the updated address.
+      await user.save();
+  
+      res.redirect('/user/checkout')
+  }
+
+}catch(error){
+  console.error(error)
+  res.redirect('/500')
+}
+}
+
 // Coupen Verify
 
 const verifyCoupon = async (req, res) => {
@@ -1756,5 +1812,5 @@ const logOut = (req, res) => {
 };
 
 module.exports = {
-  searchProducts, postReturn, verifyCoupon, clearCoupen, cancelReturn, editReview, returnProduct, topUpDone, postEditReview, topUp, deleteReview, login, wallet, myInvoice, review, postReview, paymentDone, userProfile, razorpayOrder, cancelOrder, pagenationOrders, myOrders, editPassword, walletPayment, categoryPage, successPage, editProfile, updatePass, updatePasss, saveAddress, orderSuccess, register, filter, newRegister, loginRegister, userHome, otp, reset, logOut, productDetail, mainHome, shop, resetPass, resetConfirmOtp, getCheckOut, getResetOtp, getCart, addToCart, cartQuantityUpdate, removeProduct
+  searchProducts, postReturn,editAddress,postEditAddress, verifyCoupon, clearCoupen, cancelReturn, editReview, returnProduct, topUpDone, postEditReview, topUp, deleteReview, login, wallet, myInvoice, review, postReview, paymentDone, userProfile, razorpayOrder, cancelOrder, pagenationOrders, myOrders, editPassword, walletPayment, categoryPage, successPage, editProfile, updatePass, updatePasss, saveAddress, orderSuccess, register, filter, newRegister, loginRegister, userHome, otp, reset, logOut, productDetail, mainHome, shop, resetPass, resetConfirmOtp, getCheckOut, getResetOtp, getCart, addToCart, cartQuantityUpdate, removeProduct
 }

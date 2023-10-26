@@ -2,7 +2,7 @@ const express = require('express')
 const router = express.Router()
 const path = require('path')
 
-const { login, wallet, editReview,returnProduct, topUpDone, deleteReview, postEditReview, updatePass, postReview, review, editPassword, updatePasss, categoryPage, editProfile, register, saveAddress, orderSuccess, successPage, newRegister, filter, getCheckOut, loginRegister, userHome, otp, reset, shop, logOut, productDetail, mainHome, searchProducts, resetPass, resetConfirmOtp, getResetOtp, getCart, addToCart, removeProduct, cartQuantityUpdate, userProfile, myOrders, pagenationOrders, cancelOrder, razorpayOrder, paymentDone, walletPayment, myInvoice, topUp, postReturn, cancelReturn, verifyCoupon, clearCoupen } = require('../controllers/userController')
+const { login, wallet, editReview,returnProduct, topUpDone, deleteReview, postEditReview, updatePass, postReview, review, editPassword, updatePasss, categoryPage, editProfile, register, saveAddress, orderSuccess, successPage, newRegister, filter, getCheckOut, loginRegister, userHome, otp, reset, shop, logOut, productDetail, mainHome, searchProducts, resetPass, resetConfirmOtp, getResetOtp, getCart, addToCart, removeProduct, cartQuantityUpdate, userProfile, myOrders, pagenationOrders, cancelOrder, razorpayOrder, paymentDone, walletPayment, myInvoice, topUp, postReturn, cancelReturn, verifyCoupon, clearCoupen, editAddress, postEditAddress } = require('../controllers/userController')
 const isblock = require('../middleweare/isUser')
 
 router.get('/', mainHome)
@@ -55,5 +55,7 @@ router.post('/postReturn/:orderId/:proId',postReturn)
 router.get('/cancelReturn/:orderId/:productName',cancelReturn)
 router.post('/verifyCoupon',verifyCoupon)
 router.post('/clearcoupon',clearCoupen)
+router.get('/editAddress/:id',editAddress)
+router.post('/postEditAddress/:id',postEditAddress)
 
 module.exports = router

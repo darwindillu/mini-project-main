@@ -239,10 +239,13 @@ h1 {
 
                                     <p hidden><%= order.productid %></p>
                                   </div>
-                                  <div>
-                                    <button style="width:150px; height: 50px; margin-top: 25px; " onclick="invoice('<%= order._id %>')">INVOICE</button>
-
-                                  </div>
+                                  <% if(order.status == 'Delivered'){ %>
+                                    <div>
+                                      <button style="width:150px; height: 50px; margin-top: 25px; " onclick="invoice('<%= order._id %>')">INVOICE</button>
+  
+                                    </div>
+                                 <% } %>
+                       
                                   <% if (order.status === 'Cancelled') { %>
                                     <div class="d-flex justify-content-end align-items-end">
                                       <p class="text mb-0 small">status: <i style="color: red;"><%= order.status %></i></p>

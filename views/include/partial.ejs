@@ -20,6 +20,12 @@
       color: #fff;
     }
   </style>
+  <style>
+    .dropdown-item:hover {
+        background-color: #007bff;
+        color: #fff; 
+    }
+</style>
   <header>
     <div class="p-3 text-center bg-white border-bottom">
       <div class="container">
@@ -41,9 +47,9 @@
                     </i>
                   </button>
                   <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
-                    <button class="dropdown-item" type="button"><a href="/user/profile/<%= userId %>"
+                    <button class="dropdown-item" type="button" ><a href="/user/profile/<%= userId %>"
                         style="text-decoration: none; color: grey;">PROFILE</a></button>
-                    <button class="dropdown-item" type="button"><a href="/user/logout"
+                    <button class="dropdown-item" type="button" ><a href="/user/logout"
                         style="text-decoration: none; color: grey;">LOG OUT</a></button>
                   </div>
                 </div>

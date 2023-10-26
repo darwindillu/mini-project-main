@@ -1,8 +1,6 @@
 <%- include('../include/adminheader') -%>
 
   <body>
-    <!-- <nav style="margin-bottom: -50px;">
-    </nav> -->
 
     <div >
       <% if (successMessage) { %>
@@ -98,11 +96,9 @@
     <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
     <script>
       function block_user(form) {
-        // swal("Hello world!");
         swal({
           title: "Are you sure?",
           text: "You want Block user!",
-          // icon: "warning",
           buttons: true,
           dangerMode: true,
         }).then((willDelete) => {
@@ -113,11 +109,9 @@
       }
 
       function unblock_user(form) {
-        // swal("Hello world!");
         swal({
           title: "Are you sure?",
           text: "You want UnBlock user!",
-          // icon: "warning",
           buttons: true,
           dangerMode: true,
         }).then((willDelete) => {

@@ -10,19 +10,6 @@
         <label class="logo">ALL Coupons</label>
     
         <a href="/admin/addCoupon" style="text-decoration: none; color: white; ">Add Coupon</a>
-    
-    
-        <ul style="margin-right: 160px;">
-          <li>
-    
-    
-            <!-- <form action="/admin/search" method="post" class="input-group" >
-                      
-                      <input name="username" id="searchInput" class="form-control rounded" placeholder="Search by username" aria-label="Search" aria-describedby="search-addon" />
-                      <button type="submit" class="btn btn-secondary">search</button>
-                    </form> -->
-          </li>
-        </ul>
       </nav>
     <div >
       <% if (successMessage) { %>
@@ -111,11 +98,9 @@
      
 
       function unlist_coupon(form) {
-        // swal("Hello world!");
         swal({
           title: "Are you sure?",
           text: "You want delete coupon!",
-          // icon: "warning",
           buttons: true,
           dangerMode: true,
         }).then((willDelete) => {

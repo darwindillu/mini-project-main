@@ -117,7 +117,6 @@ const newRegister = async (req, res) => {
           subject: 'Your OTP Code',
           text: `Your OTP code is: ${otp}`,
         };
-        console.log(otp);
         transporter.sendMail(mailOptions, (error, info) => {
           if (error) {
             console.log('Error sending email: ' + error);
@@ -161,7 +160,6 @@ const otp = (req, res) => {
 
 const loginRegister = async (req, res) => {
   const registerotp = req.session.registerotp
-  console.log(registerotp);
   const otp = req.body.otp
 
   if (otp == registerotp) {
@@ -493,7 +491,7 @@ const topUp = async (req, res) => {
         res.json({ order, email, username, mobile });
       }
     });
-    
+
   } catch (error) {
     console.error(error)
     res.redirect('/500')
@@ -1173,7 +1171,7 @@ const addToCart = async (req, res) => {
       const check = await productCollection.findById(proid)
       if (check) {
         const email1 = req.session.user
-        let quantity =1
+        let quantity = 1
         await registercollection.findOneAndUpdate(
           { email: email1, 'cart.items.productId': { $ne: proid } },
           {
@@ -1226,8 +1224,6 @@ const getCart = async (req, res) => {
         const product = cartProducts.find(prod => prod._id.toString() === item.productId.toString());
         if (product) {
           totalPrice += item.quantity * product.offerPrice;
-        } else {
-          console.log(`Product not found for item: ${item.productId}`);
         }
       }
       const user = true
@@ -1368,17 +1364,16 @@ const saveAddress = async (req, res) => {
 
 // Edit address
 
-const editAddress= async(req,res)=>{
-  try{
+const editAddress = async (req, res) => {
+  try {
 
     const id = req.params.id
-    const user= req.session.user
+    const user = req.session.user
     const userDocument = await registercollection.findOne({ email: user, 'Address._id': id });
-    const Address= userDocument.Address
-    console.log(Address);
+    const Address = userDocument.Address
 
-    res.status(200).render('user/editAddress',{Address})
-  }catch(error){
+    res.status(200).render('user/editAddress', { Address })
+  } catch (error) {
     console.error(error)
     res.redirect('/500')
   }
@@ -1387,12 +1382,11 @@ const editAddress= async(req,res)=>{
 // Post Edit Address
 
 const postEditAddress = async (req, res) => {
-  try{
+  try {
 
-    const addressId = req.params.id; 
-    console.log(addressId);
-    const user1 = req.session.user; 
-  
+    const addressId = req.params.id;
+    const user1 = req.session.user;
+
     const update = {
       address: req.body.address,
       city: req.body.city,
@@ -1400,26 +1394,23 @@ const postEditAddress = async (req, res) => {
       pincode: req.body.pincode,
       mobile: req.body.mobile,
     };
-  
-    const user = await registercollection.findOne({ email: user1 });
-  
-    // Find the specific address within the Address array.
-    const addressToUpdate = user.Address.id(addressId);
-  
-    if (addressToUpdate) {
-      // Update the address fields.
-      addressToUpdate.set(update);
-  
-      // Save the user document with the updated address.
-      await user.save();
-  
-      res.redirect('/user/checkout')
-  }
 
-}catch(error){
-  console.error(error)
-  res.redirect('/500')
-}
+    const user = await registercollection.findOne({ email: user1 });
+
+    const addressToUpdate = user.Address.id(addressId);
+
+    if (addressToUpdate) {
+      addressToUpdate.set(update);
+
+      await user.save();
+
+      res.redirect('/user/checkout')
+    }
+
+  } catch (error) {
+    console.error(error)
+    res.redirect('/500')
+  }
 }
 
 // Coupen Verify
@@ -1437,17 +1428,15 @@ const verifyCoupon = async (req, res) => {
     const couponId = coupon._id;
     const discount = coupon.discount;
 
-    const total = parseFloat(grandtotalValue); // Parse the total as a float
+    const total = parseFloat(grandtotalValue);
 
     const newTotal = Math.floor((discount / 100) * total);
     const total2 = Math.floor(total - newTotal);
 
-    // Check if total is greater than or equal to the minimum value
     if (total < minValue) {
       return res.status(400).json({ message: 'Minimum amount is needed', minValue });
     }
 
-    // Check if the user has used this coupon before
     const couponExisting = await registercollection.findOne({
       email: req.session.user,
       'usedCoupons.code': coupenValue,
@@ -1457,7 +1446,6 @@ const verifyCoupon = async (req, res) => {
       return res.status(400).json({ message: 'Coupon Already Used' });
     }
 
-    // If everything is okay, send a success response
     await registercollection.updateOne(
       { email: req.session.user },
       {
@@ -1480,7 +1468,7 @@ const verifyCoupon = async (req, res) => {
 
   } catch (error) {
     console.error(error);
-    return res.status(500).redirect('/500'); // Redirect to an error page in case of an error
+    return res.status(500).redirect('/500');
   }
 };
 
@@ -1617,8 +1605,8 @@ const razorpayOrder = async (req, res) => {
 
         razorpay.orders.create(options, function (err, order) {
           if (err) {
-           res.status(500).json({ error: 'Razorpay order creation failed' });
-          }else{
+            res.status(500).json({ error: 'Razorpay order creation failed' });
+          } else {
             res.status(200).json({ order, name });
           }
 
@@ -1663,7 +1651,6 @@ const paymentDone = async (req, res) => {
           productprice: price1,
           realPrice: quantity * price1,
           quantity: quantity,
-          // total: grandtotal,
           address: address,
           payment: payment,
           userId: userid
@@ -1731,14 +1718,14 @@ const walletPayment = async (req, res) => {
 
     if (walletBalance < grandtotal) {
 
-      return res.json({ message:'insufficient wallet balance' });
+      return res.json({ message: 'insufficient wallet balance' });
 
     } else {
       const productOrders = data1.map((product) => ({
         productName: product.productName,
         quantity: product.quantity,
         productprice: product.price,
-        realPrice:product.quantity * product.price,
+        realPrice: product.quantity * product.price,
         images: product.images,
         address: selectedAddress,
         payment: payment,
@@ -1756,7 +1743,7 @@ const walletPayment = async (req, res) => {
       }
 
       for (const product of data1) {
-        const { quantity,productId, productName } = product;
+        const { quantity, productId, productName } = product;
 
         const existingProduct = await productCollection.findById(productId);
         const currentStock = existingProduct.stock;
@@ -1812,5 +1799,5 @@ const logOut = (req, res) => {
 };
 
 module.exports = {
-  searchProducts, postReturn,editAddress,postEditAddress, verifyCoupon, clearCoupen, cancelReturn, editReview, returnProduct, topUpDone, postEditReview, topUp, deleteReview, login, wallet, myInvoice, review, postReview, paymentDone, userProfile, razorpayOrder, cancelOrder, pagenationOrders, myOrders, editPassword, walletPayment, categoryPage, successPage, editProfile, updatePass, updatePasss, saveAddress, orderSuccess, register, filter, newRegister, loginRegister, userHome, otp, reset, logOut, productDetail, mainHome, shop, resetPass, resetConfirmOtp, getCheckOut, getResetOtp, getCart, addToCart, cartQuantityUpdate, removeProduct
+  searchProducts, postReturn, editAddress, postEditAddress, verifyCoupon, clearCoupen, cancelReturn, editReview, returnProduct, topUpDone, postEditReview, topUp, deleteReview, login, wallet, myInvoice, review, postReview, paymentDone, userProfile, razorpayOrder, cancelOrder, pagenationOrders, myOrders, editPassword, walletPayment, categoryPage, successPage, editProfile, updatePass, updatePasss, saveAddress, orderSuccess, register, filter, newRegister, loginRegister, userHome, otp, reset, logOut, productDetail, mainHome, shop, resetPass, resetConfirmOtp, getCheckOut, getResetOtp, getCart, addToCart, cartQuantityUpdate, removeProduct
 }

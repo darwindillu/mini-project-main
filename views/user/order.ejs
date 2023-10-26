@@ -18,13 +18,10 @@
 
     <style>
         .gradient-custom-2 {
-/* fallback for old browsers */
 background: #a1c4fd;
 
-/* Chrome 10-25, Safari 5.1-6 */
 background: -webkit-linear-gradient(to right, rgba(161, 196, 253, 1), rgba(194, 233, 251, 1));
 
-/* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
 background: linear-gradient(to right, rgba(161, 196, 253, 1), rgba(194, 233, 251, 1))
 }
 
@@ -108,13 +105,10 @@ z-index: 0
     </style>
     <style>
         .gradient-custom {
-        /* fallback for old browsers */
         background: #cd9cf2;
 
-        /* Chrome 10-25, Safari 5.1-6 */
         background: -webkit-linear-gradient(to top left, rgba(205, 156, 242, 1), rgba(246, 243, 255, 1));
 
-        /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
         background: linear-gradient(to top left, rgba(205, 156, 242, 1), rgba(246, 243, 255, 1))
         }
     </style>
@@ -127,7 +121,6 @@ h1 {
   color: #fff;
 }
 
-/* You just need to get this field - start */
 
 .search-box {
   width: 350px;
@@ -197,15 +190,6 @@ h1 {
               <!-- You just need to get this field. Start -->
 <script src="https://kit.fontawesome.com/d97b87339f.js" crossorigin="anonymous"></script>
 
-<!-- <div style="margin-top: 50px;" class="search-box">
-  <input onkeyup="sendData(this)" name="name" class="search-input" type="text" placeholder="Search something..">
-  <button type="submit" class="search-btn"><i class="fas fa-search"></i></button>
-</div>
-
-<section id="searchresult"></section> -->
-
-  
-
 <!-- You just need to get this field. End -->
                 <div class="container py-5 h-100">
                   <div class="row d-flex justify-content-center align-items-center h-100">
@@ -217,10 +201,6 @@ h1 {
                           <div class="card shadow-0 border mb-4">
                             <div class="card-body">
                               <div class="row">
-                                <!-- <div class="col-md-2">
-                                  <img width="60px" src="<%= order.images %>"
-                                    class="img-fluid">
-                                </div> -->
                                   <div class="col-md-2 text-center d-flex justify-content-center align-items-center">
                                     <a style="text-decoration: none; color: black;" href="/user/productdetail/<%= order.productid %>"><%= order.productName %></a>
                                   </div>
@@ -287,7 +267,6 @@ h1 {
                                                       <h5 class="bold"><%= order.productName %></h5>
                                                       <p class="text-muted"> Qt: <%= order.quantity %></p>
                                                       <h4 class="mb-3">&#8377;<%= order.realPrice %><span class="small text-muted"> via (<%= order.payment %>) </span></h4>
-                                                      <!-- <p class="text-muted">Tracking Status on: <span class="text-body">11:30pm, Today</span></p> -->
                                                     </div>
                                                     <div>
                                                       <img class="align-self-center img-fluid"
@@ -360,12 +339,8 @@ h1 {
 
                                                  <% } %>
                                                     <div class="border-start h-100"></div>
-                                                    <!-- <h5 class="fw-normal mb-0"><a href="#!">Cancel</a></h5> -->
                                                     <div class="border-start h-100"></div>
-                                                    <!-- <h5 class="fw-normal mb-0"><a href="#!">Pre-pay</a></h5> -->
                                                     <div class="border-start h-100"></div>
-                                                    <!-- <h5 class="fw-normal mb-0"><a href="#!" class="text-muted"><i class="fas fa-ellipsis-v"></i></a>
-                                                    </h5> -->
                                                   </div>
                                                 </div>
                                               </div>
@@ -445,21 +420,14 @@ async function invoice(id) {
     const data = await response.json();
     console.log('Received data:', data);
 
-    // Check if 'refference' matches the expected data structure
-    // Ensure that it contains the necessary invoice details
-
-    // Generate and download the invoice
     easyinvoice.createInvoice(data, function (result) {
       console.log('Generated invoice:', result);
       easyinvoice.download('myInvoice.pdf', result.pdf);
     });
   } catch (error) {
     console.error(error);
-    // Handle any errors, e.g., show an error message to the user
   }
 }
-
-// ...
 
     </script>
 
@@ -474,7 +442,6 @@ async function invoice(id) {
           dangerMode: true
         }).then((willDelete) => {
           if (willDelete) {
-            // Navigate to the specified URL
             window.location.href = orderUrl;
           }
         });

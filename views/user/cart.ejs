@@ -41,7 +41,6 @@
                           </td>
                           <td class="p-3">
                             <div class="input-container d-flex align-items-center gap-2">
-                              <!-- data-index = "" -->
                               <button type="button" class="minus shadow" style="border-radius: 5px"
                                 data-index="<%=index%>" onclick="decreaseQuantity(this)">
                                 -
@@ -99,7 +98,6 @@
                 <div class="p-5 border billing_Totall d-flex align-items-center">
                   <div class="col-lg-6">
                     <h6 class="fw-bold">Grant Price</h6>
-                    <!-- <h6 class="fw-bold">Discount Price</h6> -->
                     <h5 class="fw-bold">Total price</h5>
                   </div>
                   <div class="col-lg-6">
@@ -189,9 +187,8 @@
       totalPrice1.innerText = `₹ ${response.grantTotal}`;
       totalPrice2.innerText = `₹ ${response.total}`;
 
-      // Hide the error message if there's no error
       const errorMessageElement = document.getElementById(`error-message-${itemId}`);
-      errorMessageElement.innerText = ""; // Clear any existing error message
+      errorMessageElement.innerText = ""; 
 
       if (totalQuantity == inputElement.value) {
         button.disabled = true;
@@ -206,7 +203,6 @@
         stockExceedMsg.style.display = "block";
         stockExceedMsg.innerText = `Only ${response.ProQuantity - inputElement.value} left`;
 
-        // Clear the error message below the input field
         errorMessageElement.innerText = "";
         
         setTimeout(() => {
@@ -216,21 +212,16 @@
         stockExceedMsg.style.display = "block";
         stockExceedMsg.innerText = "Out Of Stock";
 
-        // Show the error message below the input field
         errorMessageElement.innerText = "Out Of Stock";
       } else {
-        // Hide the message if none of the conditions are met
         stockExceedMsg.style.display = "none";
       }
     },
     error: function (error) {
-      // Handle the error response from the server here
       console.error("Error updating quantity:", error);
 
-      // Display the error message to the user (you can replace this with your preferred error handling method)
       const errorMessage = JSON.parse(error.responseText).error;
 
-      // Set the error message below the input field
       const errorMessageElement = document.getElementById(`error-message-${itemId}`);
       errorMessageElement.innerText = errorMessage;
     },

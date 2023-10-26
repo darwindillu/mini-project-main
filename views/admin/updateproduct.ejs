@@ -114,9 +114,8 @@
                     <% collections.images.forEach((image, i)=> { %>
                       <div class="image-container">
                         <form method="POST" action="/admin/deleteimage/<%= collections._id %>/<%= i %>">
-                          <!-- Replace with your actual delete route -->
                           <button type="submit" class="btn btn-danger btn-sm delete-button">
-                            <i class="fas fa-trash"></i> <!-- Use the trash icon for delete -->
+                            <i class="fas fa-trash"></i>
                           </button>
                           <input type="hidden" name="productId" value="<%= collections._id %>" />
                           <input type="hidden" name="imageIndex" value="<%= i %>" />

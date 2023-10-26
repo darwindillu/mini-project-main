@@ -6,7 +6,7 @@ const returnCollection = require('../model/returnSchema')
 const couponCollection = require('../model/couponSchema')
 const multer = require('multer')
 const bcrypt = require('bcrypt');
-const PDFDocument= require('pdfkit')
+const PDFDocument = require('pdfkit')
 
 
 // Admin Login
@@ -118,7 +118,7 @@ const editProfile = async (req, res) => {
     } else {
       res.redirect('/admin/login')
     }
-  } catch{
+  } catch {
     res.redirect('/500')
   }
 }
@@ -252,7 +252,7 @@ const adminPage = async (req, res) => {
     } else {
       res.redirect('/admin/home')
     }
-  } catch{
+  } catch {
     res.status(500).redirect('/500')
   }
 };
@@ -363,7 +363,7 @@ const update = async (req, res) => {
     } else {
       res.redirect('/admin/login')
     }
-  } catch{
+  } catch {
     res.status(500).redirect('/500');
   }
 };
@@ -393,11 +393,10 @@ const postUpdate = async (req, res) => {
       discount: parseInt(req.body.discount)
     };
 
-    await categoryCollection.updateOne({ category:category }, { $set: updateData });
+    await categoryCollection.updateOne({ category: category }, { $set: updateData });
 
-    // Fetch the products matching the category
     const productData = await productCollection.find({ category: category });
-    
+
 
     for (const product of productData) {
       const price = product.price;
@@ -405,17 +404,12 @@ const postUpdate = async (req, res) => {
       const discount1 = categoryDiscount;
       const offer = discount + discount1;
       const offerPrice = Math.floor(price - (price * (offer / 100)));
-      
-      console.log(price, discount, offer, discount1, offerPrice);
-    
-      // Update each product individually based on its _id
+
       await productCollection.updateOne(
         { _id: product._id },
         { $set: { categoryOffer: discount1, offerPrice: offerPrice } }
       );
     }
-
-    console.log('Products and category updated successfully');
 
     const successMessage = 'Category Updated Successfully';
     res.redirect(`/admin/category?success=${encodeURIComponent(successMessage)}`);
@@ -454,7 +448,7 @@ const unlistCat = async (req, res) => {
       res.redirect(`/admin/category?success=${encodeURIComponent(successMessage)}`);
 
     }
-  } catch{
+  } catch {
     res.status(500).redirect('/500');
   }
 };
@@ -474,7 +468,7 @@ const product = async (req, res) => {
     } else {
       res.redirect('/admin/login')
     }
-  } catch{
+  } catch {
     res.status(500).redirect('/500')
   }
 };
@@ -504,8 +498,6 @@ const postAddProduct = async (req, res) => {
       const errorMessage = 'Name should be Unique';
       res.redirect(`/admin/addproduct?error=${encodeURIComponent(errorMessage)}`);
     } else {
-      
-      // const categoryOffer = check.categoryOffer
 
       const productdata = {
         productname: req.body.productname,
@@ -513,16 +505,16 @@ const postAddProduct = async (req, res) => {
         price: req.body.price,
         images: req.files.map(file => file.filename),
         description: req.body.description,
-        discount:req.body.discount,
+        discount: req.body.discount,
         category: req.body.category,
-        offerPrice: (req.body.price) -  (req.body.price * ( (req.body.discount) / 100))
+        offerPrice: (req.body.price) - (req.body.price * ((req.body.discount) / 100))
       };
 
       await productCollection.insertMany([productdata]);
       const successMessage = 'Product Added Successfully';
       res.redirect(`/admin/product?success=${encodeURIComponent(successMessage)}`);
     }
-  } catch(error){
+  } catch (error) {
     console.error(error);
     res.status(500).redirect('/500');
   }
@@ -577,12 +569,11 @@ const postUpdateProduct = async (req, res) => {
 
       }
 
-
       await productCollection.updateOne({ _id: productid }, { $set: updateData, $push: { images: { $each: [image.images[0]] } } });
       const successMessage = 'Product Updated Successfully'
       res.redirect(`/admin/product?success=${encodeURIComponent(successMessage)}`);
     }
-  } catch{
+  } catch {
     res.status(500).redirect('/500')
   }
 };
@@ -607,7 +598,7 @@ const deleteImage = async (req, res) => {
       const errorMessage = 'Image Cannot find'
       res.status(400).redirect(`/admin/updateproduct?error=${encodeURIComponent(errorMessage)}`);
     }
-  } catch{
+  } catch {
     res.status(500).redirect('/500');
   }
 };
@@ -648,7 +639,7 @@ const couponPage = async (req, res) => {
       res.redirect('/admin/login')
     }
 
-  } catch{
+  } catch {
     res.redirect("/500")
   }
 }
@@ -689,7 +680,7 @@ const postAddCoupon = async (req, res) => {
       const successMessage = 'Coupon Added Successfully';
       res.redirect(`/admin/couponPage?success=${encodeURIComponent(successMessage)}`);
     }
-  } catch{
+  } catch {
     res.status(500).redirect('/500');
   }
 };
@@ -708,7 +699,7 @@ const editCoupon = async (req, res) => {
       res.redirect('/admin/login')
     }
 
-  } catch{
+  } catch {
     res.redirect('/500')
   }
 }
@@ -725,7 +716,7 @@ const deleteCoupon = async (req, res) => {
     );
     const successMessage = 'coupon deleted Successfully'
     res.redirect(`/admin/couponPage?success=${encodeURIComponent(successMessage)}`);
-  } catch{
+  } catch {
     res.redirect('/500')
   }
 }
@@ -798,7 +789,7 @@ const getOrders = async (req, res) => {
     } else {
       res.redirect('/admin/login');
     }
-  } catch{
+  } catch {
     res.status(500).redirect('/500')
   }
 };
@@ -842,7 +833,7 @@ const adminReturn = async (req, res) => {
     } else {
       res.redirect('/admin/login');
     }
-  } catch{
+  } catch {
     res.redirect('/500')
   }
 };
@@ -881,9 +872,9 @@ const adminPostReturn = async (req, res) => {
       };
 
       await registercollection.findOneAndUpdate(
-        {_id:userId},
-        {$push:{wallethistory:wallethistory}},
-        {new:true}
+        { _id: userId },
+        { $push: { wallethistory: wallethistory } },
+        { new: true }
 
       )
 
@@ -1014,17 +1005,17 @@ const saleyearly = async (req, res) => {
 
 // Report page
 
-const reportPage= async(req,res)=>{
-  try{
+const reportPage = async (req, res) => {
+  try {
     const username = req.session.username;
     const admin = req.session.admin
-  
-    if(admin){
-      res.render('admin/adminReports',{username,admin,dest:'reports'})
-    }else{
+
+    if (admin) {
+      res.render('admin/adminReports', { username, admin, dest: 'reports' })
+    } else {
       res.redirect('/admin/login')
     }
-  }catch{
+  } catch {
     res.redirect('/500')
   }
 }
@@ -1035,57 +1026,57 @@ const monthlyPdfReport = async (req, res) => {
   const { selectedDate } = req.body;
 
   if (!selectedDate) {
-      return res.status(400).json({ error: 'Selected date is required.' });
+    return res.status(400).json({ error: 'Selected date is required.' });
   }
 
   const selectedMonth = new Date(selectedDate).getMonth();
 
-  const matchCondition = selectedMonth === 9 ? 
-      { $or: [{ orderMonth: 9 }, { orderMonth: 10 }] } : 
-      { orderMonth: selectedMonth };
+  const matchCondition = selectedMonth === 9 ?
+    { $or: [{ orderMonth: 9 }, { orderMonth: 10 }] } :
+    { orderMonth: selectedMonth };
 
   const pipeline = [
-      {
-          $unwind: '$orders'
-      },
-      {
-          $addFields: {
-              orderMonth: { $month: '$orders.date' } 
-          }
-      },
-      {
-          $match: matchCondition
+    {
+      $unwind: '$orders'
+    },
+    {
+      $addFields: {
+        orderMonth: { $month: '$orders.date' }
       }
+    },
+    {
+      $match: matchCondition
+    }
   ];
 
   try {
-      const result = await registercollection.aggregate(pipeline)
-      if(result==''){
-          return;
-      }
+    const result = await registercollection.aggregate(pipeline)
+    if (result == '') {
+      return;
+    }
 
-      const doc = new PDFDocument();
-      const fileName = `sales_report_${selectedDate}.pdf`;
+    const doc = new PDFDocument();
+    const fileName = `sales_report_${selectedDate}.pdf`;
 
-      res.setHeader('Content-Type', 'application/pdf');
-      res.setHeader('Content-Disposition', `attachment; filename=${fileName}`);
+    res.setHeader('Content-Type', 'application/pdf');
+    res.setHeader('Content-Disposition', `attachment; filename=${fileName}`);
 
-      doc.pipe(res);
+    doc.pipe(res);
 
-      doc.fontSize(16).text('Sales Report', { align: 'center' });
+    doc.fontSize(16).text('Sales Report', { align: 'center' });
 
-      result.forEach(order => {
-          const productName = order.orders.productName;
-          const quantity = order.orders.quantity;
-          const totalprice = order.orders.realPrice;
+    result.forEach(order => {
+      const productName = order.orders.productName;
+      const quantity = order.orders.quantity;
+      const totalprice = order.orders.realPrice;
 
-          doc.font('Helvetica').fontSize(12).text(`Product: ${productName}, Quantity: ${quantity}, Total Price: ${totalprice}`);
-      });
+      doc.font('Helvetica').fontSize(12).text(`Product: ${productName}, Quantity: ${quantity}, Total Price: ${totalprice}`);
+    });
 
-      doc.end();
+    doc.end();
   } catch (error) {
-      console.error('Error:', error);
-      res.status(500).json({ error: 'Internal server error' });
+    console.error('Error:', error);
+    res.status(500).json({ error: 'Internal server error' });
   }
 };
 
@@ -1095,54 +1086,54 @@ const yearlyPdfReport = async (req, res) => {
   const { selectedDate } = req.body;
 
   if (!selectedDate) {
-      return res.status(400).json({ error: 'Selected date is required.' });
+    return res.status(400).json({ error: 'Selected date is required.' });
   }
 
   const selectedYear = new Date(selectedDate).getFullYear();
 
   const pipeline = [
-      {
-          $unwind: '$orders'
-      },
-      {
-          $addFields: {
-              orderYear: { $year: '$orders.date' }
-          }
-      },
-      {
-          $match: { orderYear: selectedYear } 
+    {
+      $unwind: '$orders'
+    },
+    {
+      $addFields: {
+        orderYear: { $year: '$orders.date' }
       }
+    },
+    {
+      $match: { orderYear: selectedYear }
+    }
   ];
 
   try {
-      const result = await registercollection.aggregate(pipeline);
+    const result = await registercollection.aggregate(pipeline);
 
-      if (result.length === 0) {
-          return res.status(404).json({ error: 'No orders found for the selected year.' });
-      }
+    if (result.length === 0) {
+      return res.status(404).json({ error: 'No orders found for the selected year.' });
+    }
 
-      const doc = new PDFDocument();
-      const fileName = `sales_report_${selectedYear}.pdf`;
+    const doc = new PDFDocument();
+    const fileName = `sales_report_${selectedYear}.pdf`;
 
-      res.setHeader('Content-Type', 'application/pdf');
-      res.setHeader('Content-Disposition', `attachment; filename=${fileName}`);
+    res.setHeader('Content-Type', 'application/pdf');
+    res.setHeader('Content-Disposition', `attachment; filename=${fileName}`);
 
-      doc.pipe(res);
+    doc.pipe(res);
 
-      doc.fontSize(16).text(`Sales Report for ${selectedYear}`, { align: 'center' });
+    doc.fontSize(16).text(`Sales Report for ${selectedYear}`, { align: 'center' });
 
-      result.forEach(order => {
-          const productName = order.orders.productName;
-          const quantity = order.orders.quantity;
-          const totalprice = order.orders.realPrice;
+    result.forEach(order => {
+      const productName = order.orders.productName;
+      const quantity = order.orders.quantity;
+      const totalprice = order.orders.realPrice;
 
-          doc.font('Helvetica').fontSize(12).text(`Product: ${productName}, Quantity: ${quantity}, Total Price: ${totalprice}`);
-      });
+      doc.font('Helvetica').fontSize(12).text(`Product: ${productName}, Quantity: ${quantity}, Total Price: ${totalprice}`);
+    });
 
-      doc.end();
+    doc.end();
   } catch (error) {
-      console.error('Error:', error);
-      res.status(500).json({ error: 'Internal server error' });
+    console.error('Error:', error);
+    res.status(500).json({ error: 'Internal server error' });
   }
 };
 
@@ -1161,4 +1152,4 @@ const adminLogOut = (req, res) => {
 }
 
 
-module.exports = { userPage,reportPage, deleteCoupon,monthlyPdfReport,yearlyPdfReport, sales, saleyearly, revenue, editCoupon, addCoupon, postAddCoupon, couponPage, adminReturn, adminPostReturn, getOrders, orderStatus, homePage, block, unBlock, categoryPage, postAddCategory, addCategory, update, postUpdate, unlistCat, product, addProduct, postAddProduct, updateProduct, postUpdateProduct, deleteProduct, adminLogOut, makeAdmin, removeAdmin, adminPage, adminProfile, editProfile, postEdit, adminHome, adminLogin, deleteImage }
+module.exports = { userPage, reportPage, deleteCoupon, monthlyPdfReport, yearlyPdfReport, sales, saleyearly, revenue, editCoupon, addCoupon, postAddCoupon, couponPage, adminReturn, adminPostReturn, getOrders, orderStatus, homePage, block, unBlock, categoryPage, postAddCategory, addCategory, update, postUpdate, unlistCat, product, addProduct, postAddProduct, updateProduct, postUpdateProduct, deleteProduct, adminLogOut, makeAdmin, removeAdmin, adminPage, adminProfile, editProfile, postEdit, adminHome, adminLogin, deleteImage }

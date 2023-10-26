@@ -17,7 +17,6 @@
       <nav class="nav nav-borders">
           <a class="nav-link ms-0" href="/user/profile/<%= userId %>">Profile</a>
           <a class="nav-link" href="/user/orders">Orders</a>
-          <!-- <a class="nav-link" href="/home/editpassword" target="__blank">Security</a> -->
           <a class="nav-link" href="/">Home</a>
       </nav>
       <input type="hidden" value="<%= userId %>" id="userId">
@@ -44,9 +43,6 @@
                       </form>
 
                     </div>
-
-                      <!-- Profile picture image-->
-                      <!-- <img class="img-account-profile rounded-circle mb-2" src="public/img/icons8-male-user-96.png" alt=""> -->
                   </div>
               </div>   
           </div>
@@ -180,18 +176,18 @@ fetch(url,{
         console.log(data.order.id);
         
           const options = {
-          "key": "rzp_test_u0UiLVVislYpTf", // Enter the Key ID generated from the Dashboard
-          "amount": data.order.amount, // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
+          "key": "rzp_test_u0UiLVVislYpTf", 
+          "amount": data.order.amount, 
           "currency": "INR",
-          "name": 'ShoppeE Wallet', //your business name
+          "name": 'ShoppeE Wallet', 
           "description": "Test Transaction",
           "image": "",
-          "order_id": data.order.id, //This is a sample Order ID. Pass the `id` obtained in the response of Step 1
+          "order_id": data.order.id, 
           "callback_url": `http://localhost:3000/user/topUpDone?data=${data}&amount=${JSON.stringify(amount)}`,
-          "prefill": { //We recommend using the prefill parameter to auto-fill customer's contact information especially their phone number
-              "name": data.username, //your customer's name
+          "prefill": { 
+              "name": data.username, 
               "email": data.email,
-              "contact": data.mobile //Provide the customer's phone number for better conversion rates 
+              "contact": data.mobile 
           },
           "notes": {
               "address": "Razorpay Corporate Office"

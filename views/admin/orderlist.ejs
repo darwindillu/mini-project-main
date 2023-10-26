@@ -110,7 +110,6 @@
     swal({
       title: "Are you sure?",
       text: "You want to Edit status!",
-      // icon: "warning",
       buttons: true,
       dangerMode: true,
     }).then((willDelete) => {
@@ -122,8 +121,8 @@
   </script>
         <script>
             document.addEventListener('DOMContentLoaded', () => {
-                // Assuming you have the total number of elements you want to handle
-                const totalElements = <%= index - 1 %>;  // Adjust this to your actual total
+
+                const totalElements = <%= index - 1 %>;  
         
                 for (let i = 1; i <= totalElements; i++) {
                     const button = document.getElementById(`button${i}`);
@@ -151,7 +150,6 @@
                         .then(responseData => {
                             console.log('Response from server:', responseData);
                             window.location.href='/admin/getorder'
-                            // Handle the response from the server if needed
                         })
                         .catch(error => {
                             console.error('Error sending data to the server:', error);

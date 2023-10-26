@@ -161,10 +161,6 @@
                 <p class="mb-2" id="grandtotal">&#8377;<%= total %>
                 </p>
               </div>
-              <!-- <div class="d-flex justify-content-between">
-                        <p class="mb-2">Discount:</p>
-                        <p class="mb-2 text-danger">- $60.00</p>
-                    </div> -->
               <div class="d-flex justify-content-between">
                 <p class="mb-2">Shipping cost:</p>
                 <p class="mb-2"> &#8377;40.00</p>
@@ -235,10 +231,6 @@
                     <label class="form-check-label" for="paymentWallet" style="font-weight: bold;">Wallet</label>
                   </div>
                   <section style="color: red;" id="passwordlimit"></section>
-
-
-                  <!-- Other Payment Options (e.g., Credit Card, PayPal, etc.) -->
-                  <!-- ... -->
 
                   <!-- Checkout Button -->
                   <button type="button" id="button1" class="btn btn-success shadow-0 border"
@@ -332,7 +324,7 @@
         for (const radioButton of radioButtons) {
           if (radioButton.checked) {
             selectedAddress = radioButton.value;
-            break; // Exit the loop once a checked radio button is found
+            break; 
           }
         }
         if (selectedAddress) {
@@ -363,7 +355,6 @@
             .then((response) => response.json())
             .then((order) => {
               if (order.message == 'Out Of Stock') {
-                // Display an error message with a link to go to the cart
                 const stockErrorMessage = document.getElementById('stockErrorMessage');
                 stockErrorMessage.innerHTML =
                   'The selected quantity exceeds the available stock ';
@@ -372,10 +363,9 @@
                 cartLink.textContent = 'Go to Cart';
                 stockErrorMessage.appendChild(cartLink);
               } else {
-                // Handle the Razorpay payment process
                 const options = {
                   key: 'rzp_test_YarKazF62a98gp',
-                  amount: order.order.amount, // Amount is in currency subunits. Default currency is INR.
+                  amount: order.order.amount, 
                   currency: 'INR',
                   name: order.name,
                   description: 'Test Transaction',
@@ -383,7 +373,6 @@
                   order_id: order.order.id,
                   callback_url: `http://localhost:3000/user/paymentdone?productData=${JSON.stringify(productData)}&selectedAddress=${JSON.stringify(selectedAddress)}&grandtotal=${totalamount}`,
                   prefill: {
-                    // Pre-fill customer's contact information here
                   },
                   notes: {
                     address: 'Razorpay Corporate Office',
@@ -405,7 +394,7 @@
         for (const radioButton of radioButtons) {
           if (radioButton.checked) {
             selectedAddress = radioButton.value;
-            break; // Exit the loop once a checked radio button is found
+            break; 
           }
         }
         if (selectedAddress) {
@@ -523,7 +512,6 @@
       })
         .then(response => response.json())
         .then(data => {
-          // let data = dataMain.data;
           if (data.message == 'Coupon Applied') {
 
             cpn.innerHTML = '';

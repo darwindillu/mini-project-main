@@ -22,57 +22,61 @@
                             </tr>
                             <% let index = 1; %>
                             <% orders.forEach(function(order) { %>
-                                <tr>
-                                    <td><%= index %></td>
-                                    <td hidden id="orderid<%= index %>"><%= order._id %></td>
-                                    <td><%= order.id %></td>
-                                    <td><%= order.userId %></td>
-                                    <td><%= order.date %></td>
-                                    <td><%= order.productName %></td>
-                                    <td><%= order.quantity %></td>
-                                    <td><%= order.productprice %></td>
-                                    <td><%= order.payment %></td>
-                                    <td>
-                                        <%= order.status %> 
-                                        <button onclick="edit_product(this.form)" style="margin-left: 20px;" 
-                                                type="button" 
-                                                class="btn btn-success"
-                                                data-bs-toggle="modal" 
-                                                data-bs-target="#exampleModal<%= index %>">
-                                            <i class="fas fa-edit fa-lg mx-1" ></i>
-                                        </button>
-                                    </td>
-                    
-                                    <!-- Modal -->
-                                    <div class="modal fade" id="exampleModal<%= index %>" tabindex="-1"
-                                        aria-labelledby="exampleModalLabel" aria-hidden="true">
-                                        <div class="modal-dialog">
-                                            <div class="modal-content">
-                                                <div class="modal-header">
-                                                    <h5 class="modal-title" id="exampleModalLabel">Status</h5>
-                                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                                        aria-label="Close"></button>
-                                                </div>
-                                                <div class="modal-body">
-                                                    <select name="productcategory" id="Kategori<%= index %>" class="ms-1 d-block w-100">
-                                                        <option><%= order.status %></option>
-                                                        <option>Pending</option>
-                                                        <option>Shipped</option>
-                                                        <option>Out for delivery</option>
-                                                        <option>Delivered</option>
-                                                    </select>
-                                                </div>
-                                                <div class="modal-footer">
-                                                    <button type="button" class="btn btn-secondary"
-                                                        data-bs-dismiss="modal">Close</button>
-                                                    <button id="button<%= index %>" type="button" class="btn btn-primary">Save changes</button>
+                                <% if(order.status != 'Return Requested' && order.status!= 'Return Request Rejected'){ %>
+
+                                    <tr>
+                                        <td><%= index %></td>
+                                        <td hidden id="orderid<%= index %>"><%= order._id %></td>
+                                        <td><%= order.id %></td>
+                                        <td><%= order.userId %></td>
+                                        <td><%= order.date %></td>
+                                        <td><%= order.productName %></td>
+                                        <td><%= order.quantity %></td>
+                                        <td>&#8377;<%= order.realPrice %></td>
+                                        <td><%= order.payment %></td>
+                                        <td>
+                                            <%= order.status %> 
+                                            <button style="margin-left: 20px;" 
+                                                    type="button" 
+                                                    class="btn btn-success"
+                                                    data-bs-toggle="modal" 
+                                                    data-bs-target="#exampleModal<%= index %>">
+                                                <i class="fas fa-edit fa-lg mx-1" ></i>
+                                            </button>
+                                        </td>
+                        
+                                        <!-- Modal -->
+                                        <div class="modal fade" id="exampleModal<%= index %>" tabindex="-1"
+                                            aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                            <div class="modal-dialog">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title" id="exampleModalLabel">Status</h5>
+                                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                            aria-label="Close"></button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <select name="productcategory" id="Kategori<%= index %>" class="ms-1 d-block w-100">
+                                                            <option><%= order.status %></option>
+                                                            <option>Pending</option>
+                                                            <option>Shipped</option>
+                                                            <option>Out for delivery</option>
+                                                            <option>Delivered</option>
+                                                        </select>
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-secondary"
+                                                            data-bs-dismiss="modal">Close</button>
+                                                        <button id="button<%= index %>" type="button" class="btn btn-primary">Save changes</button>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
-                                    </div>
-                                </tr>
-                                <% index++ %>
-                            <% }); %>
+                                    </tr>
+                                    <% index++ %>
+                                 <% } %>
+                                <% }); %>
+                                
                         </thead>
                     </table>
                 </div>

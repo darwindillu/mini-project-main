@@ -1,0 +1,136 @@
+<%- include('../include/adminheader') -%>
+
+<div class="container p-4">
+    <div class="row">
+        <div class="col-lg-12 col-sm-12 mb-4">
+            <div class="bg-light rounded h-100 p-4">
+                <h6 class="mb-4">RETURN</h6>
+                <div class="table-responsive">
+                    <table style="text-align: center;" class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th scope="col">No</th>
+                                <th scope="col">Id</th>
+                                <th scope="col">userId</th>
+                                <th scope="col">orderId</th>
+                                <th scope="col">productId</th>
+                                <th scope="col">Product Name</th>
+                                <th scope="col">Price</th>
+                                <th scope="col">Reason</th>
+                                <th scope="col">Status</th>
+
+                            </tr>
+                            <% let index = 1; %>
+                            <% returnData.forEach(function(return1) { %>
+                                    <tr>
+                                        <td><%= index %></td>
+                                        <td hidden id="returnid<%= index %>"><%= return1._id %></td>
+                                        <td><%= return1._id %></td>
+                                        <td id="userId<%= index %>"><%= return1.userId %></td>
+                                        <td id="orderId<%= index %>"><%= return1.orderId%></td>
+                                        <td id="proId<%= index %>"><%= return1.productId %></td>
+                                        <td><%= return1.productName %></td>
+                                        <td id="price<%= index %>">&#8377;<%= return1.price %></td>
+                                        <td><%= return1.reason %></td>
+                                        <td>
+                                            <%= return1.status %> 
+                                            <button style="margin-left: 20px;" 
+                                                    type="button" 
+                                                    class="btn btn-success"
+                                                    data-bs-toggle="modal" 
+                                                    data-bs-target="#exampleModal<%= index %>">
+                                                <i class="fas fa-edit fa-lg mx-1" ></i>
+                                            </button>
+                                        </td>
+                        
+                                        <!-- Modal -->
+                                        <div class="modal fade" id="exampleModal<%= index %>" tabindex="-1"
+                                            aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                            <div class="modal-dialog">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title" id="exampleModalLabel">Status</h5>
+                                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                            aria-label="Close"></button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <select name="productcategory" id="Kategori<%= index %>" class="ms-1 d-block w-100">
+                                                            <option><%= return1.status %></option>
+                                                            <option>Reject</option>
+                                                            <option>Approve</option>
+                                                        </select>
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-secondary"
+                                                            data-bs-dismiss="modal">Close</button>
+                                                        <button id="button<%= index %>" type="button" class="btn btn-primary">Save changes</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </tr>
+                                    <% index++ %>
+                                 <% }) %>
+                                
+                        </thead>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        // Assuming you have the total number of elements you want to handle
+        const totalElements = <%= index - 1 %>;  // Adjust this to your actual total
+
+        for (let i = 1; i <= totalElements; i++) {
+            const button = document.getElementById(`button${i}`);
+            const status = document.getElementById(`Kategori${i}`);
+            const returnid = document.getElementById(`returnid${i}`).textContent;
+            const priceElement = document.getElementById(`price${i}`);
+        const priceText = priceElement.textContent;
+        const parsedPrice = parseInt(priceText.replace(/[^0-9]/g, ''));
+            const userId=document.getElementById(`userId${i}`).textContent
+            const orderId=document.getElementById(`orderId${i}`).textContent
+            const proId=document.getElementById(`proId${i}`).textContent
+
+            const url = 'http://localhost:3000/admin/adminPostReturn';
+
+            button.addEventListener('click', () => {
+                const selectedStatus = status.value;
+
+                const data = {
+                    status: selectedStatus,
+                    returnid: returnid,
+                    price:parsedPrice,
+                    userId:userId,
+                    proId:proId,
+                    orderId:orderId
+
+                };
+                console.log(data)
+
+                fetch(url, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(data)
+                    
+                })
+                .then(response => response.json())
+                .then(responseData => {
+                    console.log('Response from server:', responseData);
+                    window.location.href='/admin/adminReturn'
+                    // Handle the response from the server if needed
+                })
+                .catch(error => {
+                    console.error('Error sending data to the server:', error);
+                });
+            });
+        }
+     } );
+</script>
+<%- include('../include/adminfooter') -%>

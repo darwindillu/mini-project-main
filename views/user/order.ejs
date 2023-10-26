@@ -283,7 +283,7 @@ h1 {
                                                     <div class="flex-fill">
                                                       <h5 class="bold"><%= order.productName %></h5>
                                                       <p class="text-muted"> Qt: <%= order.quantity %></p>
-                                                      <h4 class="mb-3"><%= order.total %><span class="small text-muted"> via (<%= order.payment %>) </span></h4>
+                                                      <h4 class="mb-3">&#8377;<%= order.realPrice %><span class="small text-muted"> via (<%= order.payment %>) </span></h4>
                                                       <!-- <p class="text-muted">Tracking Status on: <span class="text-body">11:30pm, Today</span></p> -->
                                                     </div>
                                                     <div>
@@ -313,17 +313,49 @@ h1 {
                                                       <div class="step active"> <span class="icon"> <i class="fas fa-check"></i> </span> <span class="text">Shipped</span> </div>
                                                       <div class="step active"> <span class="icon"> <i class="fas fa-truck"></i> </span> <span class="text">Out for delivery</span> </div>
                                                       <div class="step active"> <span class="icon"> <i class="fas fa-box"></i> </span> <span class="text">Delivered</span> </div>
-                                                    <% } else { %>
+                                                    <% }else if(order.status=='Return Requested'){ %>
+                                                      <div class="step active"> <span class="icon"> <i class="fas fa-spinner"></i> </span> <span class="text">Pending</span> </div>
+                                                      <div class="step active"> <span class="icon"> <i class="fas fa-check"></i> </span> <span class="text">Shipped</span> </div>
+                                                      <div class="step active"> <span class="icon"> <i class="fas fa-truck"></i> </span> <span class="text">Out for delivery</span> </div>
+                                                      <div class="step active"> <span class="icon"> <i class="fas fa-box"></i> </span> <span class="text">Delivered</span> </div>
+                                                      <div class="step active"> <span class="icon"> <i class="fas fa-box"></i> </span> <span class="text">Return Requested</span> </div>
+
+                                                    <% }else if(order.status =='Return Request Rejected'){ %>
+                                                      <div class="step active"> <span class="icon"> <i class="fas fa-spinner"></i> </span> <span class="text">Pending</span> </div>
+                                                      <div class="step active"> <span class="icon"> <i class="fas fa-check"></i> </span> <span class="text">Shipped</span> </div>
+                                                      <div class="step active"> <span class="icon"> <i class="fas fa-truck"></i> </span> <span class="text">Out for delivery</span> </div>
+                                                      <div class="step active"> <span class="icon"> <i class="fas fa-box"></i> </span> <span class="text">Delivered</span> </div>
+                                                      <div class="step active"> <span class="icon"> <i class="fas fa-box"></i> </span> <span class="text">Return Requested</span> </div>
+                                                      <div class="step active"> <span class="icon"> <i class="fas fa-box"></i> </span> <span class="text">Request Rejected</span> </div>
+
+                                                   <% }else if(order.status =='Approved'){ %>
+                                                    <div class="step active"> <span class="icon"> <i class="fas fa-spinner"></i> </span> <span class="text">Pending</span> </div>
+                                                    <div class="step active"> <span class="icon"> <i class="fas fa-check"></i> </span> <span class="text">Shipped</span> </div>
+                                                    <div class="step active"> <span class="icon"> <i class="fas fa-truck"></i> </span> <span class="text">Out for delivery</span> </div>
+                                                    <div class="step active"> <span class="icon"> <i class="fas fa-box"></i> </span> <span class="text">Delivered</span> </div>
+                                                    <div class="step active"> <span class="icon"> <i class="fas fa-box"></i> </span> <span class="text">Return Requested</span> </div>
+                                                    <div class="step active"> <span class="icon"> <i class="fas fa-box"></i> </span> <span class="text">Request Approved</span> </div>
+                                                  <% } else { %>
                                                       <div class="step active"> <span class="icon"> <i class="fas fa-times"></i> </span> <span class="text">Cancelled</span> </div>
                                                     <% } %>
                                                 </div>
                                                 </div>
                                                 <div class="card-footer p-4">
                                                   <div class="d-flex justify-content-between">
-                                                    <% if (order.status != 'Cancelled' && order.status != 'Delivered') { %>
+                                                    <% if (order.status != 'Cancelled' && order.status != 'Delivered' && order.status!='Return Requested' && order.status!='Return Request Rejected' && order.status!='Approve' && order.status != 'Reject') { %>
                                                     <h5 class="fw-normal mb-0"><a style="text-decoration: none; cursor: pointer;" onclick="cancel_order('/user/cancelorder/<%= order._id %>')">Cancel Order</a>
                                                     </h5>
                                                     <% } %>
+                                                    <% if (order.status == 'Delivered'){ %>
+                                                      
+                                                      <h5 class="fw-normal mb-0"><a style="text-decoration: none; cursor: pointer;" onclick="return_order(`/user/return/<%= order._id %>/<%= order.productName %>`)">Return Product</a>
+                                                      </h5> 
+                                                  <% } %>
+                                                  <% if (order.status== 'Return Requested'){ %>
+                                                    <h5 class="fw-normal mb-0"><a style="text-decoration: none; cursor: pointer;" onclick="cancel_return(`/user/cancelReturn/<%= order._id %>/<%= order.productName %>`)">Cancel Return </a>
+                                                    </h5> 
+
+                                                 <% } %>
                                                     <div class="border-start h-100"></div>
                                                     <!-- <h5 class="fw-normal mb-0"><a href="#!">Cancel</a></h5> -->
                                                     <div class="border-start h-100"></div>
@@ -440,6 +472,32 @@ async function invoice(id) {
         }).then((willDelete) => {
           if (willDelete) {
             // Navigate to the specified URL
+            window.location.href = orderUrl;
+          }
+        });
+      }
+
+      function return_order(orderUrl) {
+        swal({
+          title: 'Are you sure?',
+          text: 'You want to return the order!',
+          buttons: true,
+          dangerMode: true
+        }).then((willDelete) => {
+          if (willDelete) {
+            window.location.href = orderUrl;
+          }
+        });
+      }
+
+      function cancel_return(orderUrl) {
+        swal({
+          title: 'Are you sure?',
+          text: 'You want to cancel the return!',
+          buttons: true,
+          dangerMode: true
+        }).then((willDelete) => {
+          if (willDelete) {
             window.location.href = orderUrl;
           }
         });

@@ -1,6 +1,8 @@
 const productCollection = require('../model/productschema');
 const registercollection = require('../model/registerSchema')
 const categoryCollection = require('../model/categoryschema')
+const returnCollection = require('../model/returnSchema')
+const couponCollection = require('../model/couponSchema')
 const nodemailer = require('nodemailer')
 const generateOtp = require('generate-otp')
 const mongoose = require('mongoose')
@@ -8,8 +10,8 @@ const { ObjectId } = require('mongodb');
 const easyinvoice = require('easyinvoice')
 const Razorpay = require('razorpay')
 const razorpay = new Razorpay({
-  key_id: 'rzp_test_u0UiLVVislYpTf',
-  key_secret: 'dMU1AIWLx3k1Nts6oSLgURJQ'
+  key_id: "rzp_test_YarKazF62a98gp",
+  key_secret: 'LZsyQX8qt0flglYddpVr2Krx'
 })
 
 const bcrypt = require('bcrypt');
@@ -27,7 +29,7 @@ const transporter = nodemailer.createTransport({
 
 const mainHome = async (req, res) => {
   try {
-    const productdata = await productCollection.find({}, 'images productname price availability').limit(20);
+    const productdata = await productCollection.find({}, 'images productname price availability offerPrice discount categoryOffer').limit(20);
     const productdata1 = await productCollection.find().skip(20).limit(4)
     const username = req.session.username1;
     const user = req.session.user;
@@ -111,10 +113,11 @@ const newRegister = async (req, res) => {
 
         const mailOptions = {
           from: 'ddillu777@gmail.com',
-          to: `ddillu777@gmail.com`,
+          to: `${email}`,
           subject: 'Your OTP Code',
           text: `Your OTP code is: ${otp}`,
         };
+        console.log(otp);
         transporter.sendMail(mailOptions, (error, info) => {
           if (error) {
             console.log('Error sending email: ' + error);
@@ -158,6 +161,7 @@ const otp = (req, res) => {
 
 const loginRegister = async (req, res) => {
   const registerotp = req.session.registerotp
+  console.log(registerotp);
   const otp = req.body.otp
 
   if (otp == registerotp) {
@@ -466,7 +470,7 @@ const topUp = async (req, res) => {
   try {
     const email1 = req.session.user
     const name = await registercollection.findOne({ email: email1 })
-    const amount = req.body.amount
+    const amount = req.body.amountValue
     req.session.amount = amount
     const email = name.email
     const username = name.username
@@ -479,8 +483,17 @@ const topUp = async (req, res) => {
     };
 
     razorpay.orders.create(options, function (err, order) {
-      res.json({ order, email, username, mobile })
-    })
+      if (err) {
+        console.error('Razorpay order creation error:', err);
+        res.status(500).json({ error: 'Failed to create Razorpay order' });
+      } else if (!order) {
+        console.error('Razorpay order is null');
+        res.status(500).json({ error: 'Razorpay order is null' });
+      } else {
+        res.json({ order, email, username, mobile });
+      }
+    });
+    
   } catch (error) {
     console.error(error)
     res.redirect('/500')
@@ -540,6 +553,8 @@ const myOrders = async (req, res) => {
 
     const email = req.session.user;
     const user = await registercollection.findOne({ email: email });
+    const orderId = req.query.orderId
+    const proId = req.query.proId
 
     const productsForFirstOrder = user.orders
     productsForFirstOrder.sort((a, b) => b.date - a.date);
@@ -550,7 +565,7 @@ const myOrders = async (req, res) => {
 
     const limitedOrdersWithProducts = productsForFirstOrder.slice(a, b);
 
-    res.render('user/order', { orders: limitedOrdersWithProducts, pagenum, pages, user, userId });
+    res.render('user/order', { orders: limitedOrdersWithProducts, pagenum, pages, user, userId, orderId, proId });
   }
   catch (error) {
     console.error('Error fetching orders:', error);
@@ -673,6 +688,104 @@ const cancelOrder = async (req, res) => {
   }
 };
 
+// Return Order
+
+const returnProduct = async (req, res) => {
+  try {
+
+    const orderId = req.params.orderId
+    const productName = req.params.productName
+    const user = req.session.user
+    const productData = await productCollection.findOne({ productname: productName })
+    const proId = productData._id
+
+    if (!user) {
+      res.redirect('/user/login')
+    } else {
+      res.render('user/return', { orderId, proId })
+    }
+  } catch (error) {
+    console.error(error)
+    res.redirect('/500')
+  }
+}
+
+// Post Return
+
+const postReturn = async (req, res) => {
+  try {
+
+    const orderId = req.params.orderId
+    const proId = req.params.proId
+    const productData = await productCollection.findById({ _id: proId })
+    const productName = productData.productname
+    const user = req.session.user
+    const userData = await registercollection.findOne(
+      { email: user },
+      { _id: 1, orders: { $elemMatch: { _id: orderId } } }
+    );
+    const reason = req.body.return
+    const userId = userData._id
+    const orderData = userData.orders[0]
+    const total = orderData.realPrice
+
+    const updateData = {
+      userId: userId,
+      orderId: orderId,
+      productId: proId,
+      productName: productName,
+      price: total,
+      reason: reason
+    }
+
+    await registercollection.findOneAndUpdate(
+      { email: user, 'orders._id': orderId },
+      { $set: { 'orders.$.status': 'Return Requested' } }
+    );
+
+    await returnCollection.insertMany([updateData])
+
+    res.redirect('/user/orderS')
+  } catch (error) {
+    console.error(error)
+    res.redirect('/500')
+  }
+}
+
+// Cancel return
+
+const cancelReturn = async (req, res) => {
+  try {
+    const orderId = req.params.orderId
+    const productName = req.params.productName
+    const productData = await productCollection.findOne({ productname: productName })
+
+    const proId = productData._id
+
+    const user = req.session.user
+    const userData = await registercollection.findOne({ email: user })
+    const reason = req.body.return
+    const userId = userData._id
+
+    await returnCollection.findOneAndUpdate(
+      { userId: userId, orderId: orderId, productId: proId },
+      { $set: { status: 'Rejected' } }
+    );
+
+    await registercollection.findOneAndUpdate(
+      { email: user, 'orders._id': orderId },
+      { $set: { 'orders.$.status': 'Return Request Rejected' } }
+    );
+
+    res.redirect('/user/orders')
+  } catch (error) {
+    console.error(error)
+    res.redirect('/500')
+  }
+}
+
+
+
 // download invoice
 
 const myInvoice = async (req, res) => {
@@ -700,7 +813,7 @@ const myInvoice = async (req, res) => {
     const district = address2.district;
     const productName = order.productName;
     const quantity = order.quantity;
-    const total = order.total
+    const total = order.realPrice
     const price = order.productprice
 
 
@@ -734,7 +847,7 @@ const myInvoice = async (req, res) => {
         "number": "2021.0001",
         "date": "21-10-2023",
         "due-date": "31-10-2023"
-    },
+      },
       "products": [
         {
           "product Name": productName,
@@ -820,7 +933,7 @@ const filter = async (req, res) => {
     const username = req.session.username1;
     const cat_name = req.body.category;
     const sortFilter = req.body.sortOption;
-    const priceRange = req.body.price_range; 
+    const priceRange = req.body.price_range;
     const userId = req.session.userId;
 
     let sortDirection = 1;
@@ -842,7 +955,7 @@ const filter = async (req, res) => {
 
     res.render('user/shop', { products, categorydata, user: req.session.user, sortFilter, cat_name, username, userId });
   } catch (error) {
-    console.log(error.message);
+    console.error(error.message);
     res.redirect('/500');
   }
 };
@@ -1060,6 +1173,7 @@ const addToCart = async (req, res) => {
       const check = await productCollection.findById(proid)
       if (check) {
         const email1 = req.session.user
+        let quantity =1
         await registercollection.findOneAndUpdate(
           { email: email1, 'cart.items.productId': { $ne: proid } },
           {
@@ -1069,9 +1183,8 @@ const addToCart = async (req, res) => {
                 productname: check.productname,
                 images: check.images,
                 quantity: 1,
-                realPrice: check.price,
-                price: check.price,
-                productprice: check.price,
+                realPrice: check.offerPrice,
+                price: quantity * check.offerPrice,
                 offer: 'null'
               }
             }
@@ -1106,28 +1219,24 @@ const getCart = async (req, res) => {
       const cartCount = cartItems.length
       const cartProductIds = cartItems.map(item => item.productId);
       const cartProducts = await productCollection.find({ _id: { $in: cartProductIds } });
-      const productsPrice = cartItems.reduce((accu, element) => accu + (element.quantity * element.price), 0);
+      const productsPrice = cartItems.reduce((accu, element) => accu + (element.quantity * element.realPrice), 0);
       const totalQuantity = cartItems.reduce((total, item) => total + item.quantity, 0);
       let totalPrice = 0;
       for (const item of cartItems) {
         const product = cartProducts.find(prod => prod._id.toString() === item.productId.toString());
         if (product) {
-          totalPrice += item.quantity * product.price;
+          totalPrice += item.quantity * product.offerPrice;
         } else {
           console.log(`Product not found for item: ${item.productId}`);
         }
       }
       const user = true
-      const discount = Math.abs(totalPrice - productsPrice);
-
-
-      res.render('user/cart', { message: "Login Page", user, username, name, userId, cartCount, cartItems, cartProducts, productsPrice, totalQuantity, totalPrice, discount, similarproducts })
-
+      res.render('user/cart', { message: "Login Page", user, username, name, userId, cartCount, cartItems, cartProducts, productsPrice, totalQuantity, totalPrice, similarproducts })
     } else {
       res.redirect('/login')
     }
   } catch (error) {
-    console.log(error)
+    console.error(error)
     res.redirect('/500')
   }
 
@@ -1173,7 +1282,7 @@ const cartQuantityUpdate = async (req, res) => {
       return res.status(404).json({ error: 'Cart item not found' });
     }
 
-    const regularPrice = cartItem.price;
+    const regularPrice = cartItem.realPrice;
     let productId = cartItem.productId;
 
     const productData = await productCollection.findById(productId)
@@ -1183,11 +1292,11 @@ const cartQuantityUpdate = async (req, res) => {
       return res.status(400).json({ error: ' stock not available' });
     }
 
-    cartItem.realPrice = regularPrice * data;
+    cartItem.price = regularPrice * data;
     cartItem.quantity = data;
 
-    const GPrice = cartItems.reduce((accu, element) => accu + element.realPrice, 0);
-    const T = cartItems.reduce((accu, element) => accu + element.realPrice, 0);
+    const GPrice = cartItems.reduce((accu, element) => accu + element.price, 0);
+    const T = cartItems.reduce((accu, element) => accu + element.price, 0);
     userDetails.grantTotal = GPrice;
     userDetails.total = T;
 
@@ -1197,7 +1306,7 @@ const cartQuantityUpdate = async (req, res) => {
     const grantTotal = userDetails.grantTotal;
     const total = userDetails.total;
 
-    res.json({ cartPrice: cartItem.realPrice, grantTotal, total });
+    res.json({ cartPrice: cartItem.price, grantTotal, total });
 
   } catch (error) {
     console.error(error);
@@ -1218,11 +1327,12 @@ const getCheckOut = async (req, res) => {
       const categorydata = await categoryCollection.find()
       const userdata = await registercollection.findOne({ email: user })
       const cartItems = userdata.cart.items
-      const total = cartItems.reduce((accu, element) => accu + element.realPrice, 0);
-      const productprice = cartItems.map(item => item.productprice)
+      const total = cartItems.reduce((accu, element) => accu + element.price, 0);
+      const productprice = cartItems.map(item => item.realPrice)
       const address = userdata.Address
+      const coupons = await couponCollection.find()
 
-      res.render('user/checkout', { username, user, categorydata, cartItems, total, userId, address, productprice })
+      res.render('user/checkout', { username, user, categorydata, cartItems, total, userId, address, productprice, coupons })
     } else {
       res.redirect('/')
     }
@@ -1256,6 +1366,88 @@ const saveAddress = async (req, res) => {
   }
 }
 
+// Coupen Verify
+
+const verifyCoupon = async (req, res) => {
+  try {
+    const { coupenValue, grandtotalValue } = req.body;
+
+    const coupon = await couponCollection.findOne({ code: coupenValue });
+    if (!coupon) {
+      return res.status(400).json({ message: 'Invalid Coupon' });
+    }
+
+    const minValue = coupon.minValue;
+    const couponId = coupon._id;
+    const discount = coupon.discount;
+
+    const total = parseFloat(grandtotalValue); // Parse the total as a float
+
+    const newTotal = Math.floor((discount / 100) * total);
+    const total2 = Math.floor(total - newTotal);
+
+    // Check if total is greater than or equal to the minimum value
+    if (total < minValue) {
+      return res.status(400).json({ message: 'Minimum amount is needed', minValue });
+    }
+
+    // Check if the user has used this coupon before
+    const couponExisting = await registercollection.findOne({
+      email: req.session.user,
+      'usedCoupons.code': coupenValue,
+    });
+
+    if (couponExisting) {
+      return res.status(400).json({ message: 'Coupon Already Used' });
+    }
+
+    // If everything is okay, send a success response
+    await registercollection.updateOne(
+      { email: req.session.user },
+      {
+        $push: {
+          usedCoupons: { code: coupenValue, couponId: couponId },
+        },
+      }
+    );
+
+    return res.status(200).json({
+      message: 'Coupon Applied',
+      data: {
+        couponId: couponId,
+        discount: discount,
+        minValue: minValue,
+        newTotal: newTotal,
+        total2: total2,
+      },
+    });
+
+  } catch (error) {
+    console.error(error);
+    return res.status(500).redirect('/500'); // Redirect to an error page in case of an error
+  }
+};
+
+// clear coupon
+
+const clearCoupen = async (req, res) => {
+  const coupenid = req.body.coupenid
+  const email = req.session.user
+  await registercollection.updateOne(
+    { email: email },
+    { $pull: { coupons: { couponId: coupenid } } }
+  );
+
+  await registercollection.updateOne(
+    { email: email },
+    { $pull: { usedCoupons: { couponId: coupenid } } }
+  );
+
+  req.session.coupon = null
+  res.status(200).json({ message: 'removed' })
+}
+
+
 // // success page
 
 const successPage = async (req, res) => {
@@ -1277,7 +1469,7 @@ const orderSuccess = async (req, res) => {
     const userdata = await registercollection.findOne({ email: user });
     const userid = userdata._id;
     const { selectedAddress, paymentMethod } = req.body.data;
-    const grandtotal = req.body.grandtotal;
+    const grandtotalValue = req.body.grandtotalValue;
     const data1 = req.body.data1;
 
     const productOrders = data1.map(product => ({
@@ -1285,7 +1477,7 @@ const orderSuccess = async (req, res) => {
       quantity: product.quantity,
       productprice: product.price,
       images: product.images,
-      total: grandtotal,
+      realPrice: product.quantity * product.price,
       address: selectedAddress,
       payment: paymentMethod,
       userId: userid,
@@ -1340,19 +1532,19 @@ const orderSuccess = async (req, res) => {
   }
 };
 
-
 // online payment
+
 const razorpayOrder = async (req, res) => {
   try {
     const email = req.session.user;
     const name = await registercollection.findOne({ email: email }, { _id: 0, username: 1 });
 
-    let totalamount = req.body.totalamount;
+    let totalamount = parseInt(req.body.totalamount);
     const productData = req.body.productData;
 
     for (const product of productData) {
-      const { quantity, productName } = product;
-      const existingProduct = await productCollection.findOne({ productname: productName });
+      const { quantity, productName, productId } = product;
+      const existingProduct = await productCollection.findById(productId);
 
       const currentStock = existingProduct.stock;
 
@@ -1369,10 +1561,11 @@ const razorpayOrder = async (req, res) => {
 
         razorpay.orders.create(options, function (err, order) {
           if (err) {
-            return res.status(500).json({ error: 'Razorpay order creation failed' });
+           res.status(500).json({ error: 'Razorpay order creation failed' });
+          }else{
+            res.status(200).json({ order, name });
           }
 
-          res.json({ order, name });
         });
       }
     }
@@ -1412,8 +1605,9 @@ const paymentDone = async (req, res) => {
           razorpay_order_Payment_Id: razorpay_payment_id,
           productName: productName,
           productprice: price1,
+          realPrice: quantity * price1,
           quantity: quantity,
-          total: grandtotal,
+          // total: grandtotal,
           address: address,
           payment: payment,
           userId: userid
@@ -1469,7 +1663,7 @@ const walletPayment = async (req, res) => {
 
     const user = req.session.user;
     const selectedAddress = req.body.selectedAddress;
-    const grandtotal = req.body.grandtotal;
+    const grandtotal = req.body.grandtotalValue;
     const payment = 'wallet';
     const data1 = req.body.productData;
     const productName = data1.map((product) => product.productName)
@@ -1481,22 +1675,22 @@ const walletPayment = async (req, res) => {
 
     if (walletBalance < grandtotal) {
 
-      return res.json({ message: 'insufficient wallet balance' });
+      return res.json({ message:'insufficient wallet balance' });
 
     } else {
       const productOrders = data1.map((product) => ({
         productName: product.productName,
         quantity: product.quantity,
         productprice: product.price,
+        realPrice:product.quantity * product.price,
         images: product.images,
-        total: grandtotal,
         address: selectedAddress,
         payment: payment,
         userId: userid
       }));
 
 
-      walletBalance = walletBalance - grandtotal;
+      walletBalance = parseInt(walletBalance - grandtotal);
 
       const walletHistory = {
         process: 'Ordered',
@@ -1506,9 +1700,9 @@ const walletPayment = async (req, res) => {
       }
 
       for (const product of data1) {
-        const { quantity, productName } = product;
+        const { quantity,productId, productName } = product;
 
-        const existingProduct = await productCollection.findOne({ productname: productName });
+        const existingProduct = await productCollection.findById(productId);
         const currentStock = existingProduct.stock;
         const newStock = currentStock - quantity;
 
@@ -1562,5 +1756,5 @@ const logOut = (req, res) => {
 };
 
 module.exports = {
-  searchProducts, editReview, topUpDone, postEditReview, topUp, deleteReview, login, wallet, myInvoice, review, postReview, paymentDone, userProfile, razorpayOrder, cancelOrder, pagenationOrders, myOrders, editPassword, walletPayment, categoryPage, successPage, editProfile, updatePass, updatePasss, saveAddress, orderSuccess, register, filter, newRegister, loginRegister, userHome, otp, reset, logOut, productDetail, mainHome, shop, resetPass, resetConfirmOtp, getCheckOut, getResetOtp, getCart, addToCart, cartQuantityUpdate, removeProduct
+  searchProducts, postReturn, verifyCoupon, clearCoupen, cancelReturn, editReview, returnProduct, topUpDone, postEditReview, topUp, deleteReview, login, wallet, myInvoice, review, postReview, paymentDone, userProfile, razorpayOrder, cancelOrder, pagenationOrders, myOrders, editPassword, walletPayment, categoryPage, successPage, editProfile, updatePass, updatePasss, saveAddress, orderSuccess, register, filter, newRegister, loginRegister, userHome, otp, reset, logOut, productDetail, mainHome, shop, resetPass, resetConfirmOtp, getCheckOut, getResetOtp, getCart, addToCart, cartQuantityUpdate, removeProduct
 }

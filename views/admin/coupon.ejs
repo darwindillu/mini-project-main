@@ -1,0 +1,132 @@
+<%- include('../include/adminheader') -%>
+
+  <body>
+    <nav>
+        <input type="checkbox" id="check">
+        <label for="check" class="checkbtn">
+          <i class="fas fa-bars"></i>
+        </label>
+    
+        <label class="logo">ALL Coupons</label>
+    
+        <a href="/admin/addCoupon" style="text-decoration: none; color: white; ">Add Coupon</a>
+    
+    
+        <ul style="margin-right: 160px;">
+          <li>
+    
+    
+            <!-- <form action="/admin/search" method="post" class="input-group" >
+                      
+                      <input name="username" id="searchInput" class="form-control rounded" placeholder="Search by username" aria-label="Search" aria-describedby="search-addon" />
+                      <button type="submit" class="btn btn-secondary">search</button>
+                    </form> -->
+          </li>
+        </ul>
+      </nav>
+    <div >
+      <% if (successMessage) { %>
+        <div class="alert alert-success">
+          <%= successMessage %>
+        </div>
+        <script>
+          setTimeout(function () {
+            var successMessageDiv = document.querySelector('.alert-success');
+            if (successMessageDiv) {
+              successMessageDiv.style.display = 'none';
+            }
+          }, 3000); 
+        </script>
+        <% } %>
+
+
+          <% if (errorMessage) { %>
+            <div class="alert alert-danger">
+              <%= errorMessage %>
+            </div>
+            <script>
+              setTimeout(function () {
+                var errorMessageDiv = document.querySelector('.alert-danger');
+                if (errorMessageDiv) {
+                  errorMessageDiv.style.display = 'none';
+                }
+              }, 3000); 
+            </script>
+            <% } %>
+    </div>
+
+
+    <table style="text-align: center; margin-top: 30px;" class="table table-bordered">
+      <thead>
+        <tr class="table-dark">
+          <th scope="col">NO</th>
+          <th scope="col">CODE</th>
+          <th scope="col">DISCOUNT</th>
+          <th scope="col">MIN VALUE</th>
+          <th scope="col">DESCRIPTION</th>
+          <th scope="col">EDIT/DELETE</th>
+
+        </tr>
+      </thead>
+      <tbody>
+        <% coupon.forEach((collections, index)=> { %>
+            <% if(collections.availability===true){ %>
+
+                <tr>
+                    <td>
+                      <%= index + 1 %>
+                    </td>
+                    <td>
+                      <%= collections.code %>
+                    </td>
+                    <td>
+                      <%= collections.discount %> %
+                    </td>
+                    <td>
+                      <%= collections.minValue %>
+                    </td>
+                    <td>
+                      <%= collections.description %>
+                    </td>
+                   
+                    <td>
+                      <form action="/admin/deleteCoupon" method="POST" class="btn2" class="form">
+                          <input type="hidden" name="userId" value="<%= collections._id %>">
+                          <button type="button" style="color: white; background-color: red; width: 100px;"
+                            onclick="unlist_coupon(this.form)">Delete</button>
+                        </form>
+                        <a href="/admin/editCoupon/<%= collections._id %>" class="text-sucess">
+                          <i class="fas fa-edit fa-lg mx-1"></i>
+                        </a>
+                    </td>
+                   
+      
+                  </tr>
+              <% } %>
+            <% }) %>
+      </tbody>
+    </table>
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+    <script>
+     
+
+      function unlist_coupon(form) {
+        // swal("Hello world!");
+        swal({
+          title: "Are you sure?",
+          text: "You want delete coupon!",
+          // icon: "warning",
+          buttons: true,
+          dangerMode: true,
+        }).then((willDelete) => {
+          if (willDelete) {
+            form.submit();
+          }
+        });
+      }
+
+    </script>
+
+
+
+    <%- include('../include/adminfooter') -%>

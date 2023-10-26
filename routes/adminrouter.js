@@ -15,7 +15,7 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage: storage });
 
-const { userPage, homePage, block, unBlock, orderStatus, categoryPage, postAddCategory, addCategory, update, postUpdate, unlistCat, product, addProduct, postAddProduct, updateProduct, postUpdateProduct, deleteProduct, adminLogOut, makeAdmin, removeAdmin, adminPage, adminProfile, editProfile, postEdit, adminLogin, adminHome, deleteImage, getOrders } = require('../controllers/adminController');
+const { userPage,adminPostReturn,sales,saleyearly,revenue, homePage, block, unBlock, orderStatus, categoryPage, postAddCategory, addCategory, update, postUpdate, unlistCat, product, addProduct, postAddProduct, updateProduct, postUpdateProduct, deleteProduct, adminLogOut, makeAdmin, removeAdmin, adminPage, adminProfile, editProfile, postEdit, adminLogin, adminHome, deleteImage, getOrders, adminReturn, couponPage, addCoupon, postAddCoupon, editCoupon, deleteCoupon, reportPage, monthlyPdfReport, yearlyPdfReport } = require('../controllers/adminController');
 
 router.get('/login', adminLogin)
 router.post('/home', adminHome)
@@ -45,5 +45,18 @@ router.post('/posteditprofile', postEdit)
 router.post('/deleteimage/:productId/:imageIndex', deleteImage)
 router.get('/getorder', getOrders)
 router.post('/orderstatus', orderStatus)
+router.get('/adminReturn',adminReturn)
+router.post('/adminPostReturn',adminPostReturn)
+router.get('/couponPage',couponPage)
+router.get('/addCoupon',addCoupon)
+router.post('/postAddCoupon',postAddCoupon)
+router.get('/editCoupon/:couponid',editCoupon)
+router.post('/deleteCoupon',deleteCoupon)
+router.post('/sales-data',sales)
+router.post('/revenue',revenue)
+router.post('/saleyearly',saleyearly)
+router.get('/reports',reportPage)
+router.post('/month-pdf-report',monthlyPdfReport)
+router.post('/yearsalepdfreport',yearlyPdfReport)
 
 module.exports = router

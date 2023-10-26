@@ -4,7 +4,6 @@ const isblocked = async (req, res, next) => {
     try {
         const email = req.session.user
         const userData = await registercollection.findOne({ email: email })
-        console.log(userData);
         if (userData.blocked === false) {
             next()
         } else {

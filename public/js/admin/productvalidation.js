@@ -2,43 +2,56 @@ const form= document.getElementById('productform');
 const proname=document.getElementById('productname');
 const stock= document.getElementById('stockid')
 const price= document.getElementById('price')
+const discount= document.getElementById('discount')
 const images=document.getElementById('images')
 const description=document.getElementById('description')
 const category=document.getElementById('category');
 
 
-form.addEventListener('submit',e =>{
+
+if (form && proname && stock && price && discount && images && description && category) {
+  form.addEventListener('submit', e => {
     e.preventDefault();
     validateInputs();
-});
+  });
+} else {
+  console.error('One or more form elements are null or do not exist.');
+}
 
-const setError= (element,message)=>{
-    const inputControl=element.parentElement;
-    const errorDisplay=inputControl.querySelector('.error');
-
-    errorDisplay.innerText=message;
+const setError = (element, message) => {
+  const inputControl = element.parentElement;
+  const errorDisplay = inputControl.querySelector('.error');
+  if (errorDisplay) {
+    errorDisplay.innerText = message;
     inputControl.classList.add('error');
     inputControl.classList.remove('success');
 
     setTimeout(() => {
       errorDisplay.innerText = '';
       inputControl.classList.remove('error');
-  }, 3000);
+    }, 3000);
+  } else {
+    console.error('Error display element is null or does not exist.');
+  }
 }
 
-const setSuccess= element=>{
-    const inputControl=element.parentElement;
-    const errorDisplay=inputControl.querySelector('.error');
-
-    errorDisplay.innerText='';
+const setSuccess = element => {
+  const inputControl = element.parentElement;
+  const errorDisplay = inputControl.querySelector('.error');
+  if (errorDisplay) {
+    errorDisplay.innerText = '';
     inputControl.classList.add('success');
     inputControl.classList.remove('error');
+  } else {
+    console.error('Error display element is null or does not exist.');
+  }
 }
 
 const validateInputs = () => {
     const pronameValue = proname.value.trim();
     const stockValue = stock.value.trim();
     const priceValue = price.value.trim();
+    const discountValue= discount.value.trim()
     const categoryValue = category.value.trim();
     const descriptionValue = description.value.trim();
     const imageValue = images.value.trim().toLowerCase(); 
@@ -77,6 +90,19 @@ const validateInputs = () => {
 
     } else {
       setSuccess(price);
+    }
+
+    if (discountValue === '') {
+      setError(discount, 'Discount is required / assign zero');
+      flag = false;
+    } else {
+      const discountValueNumber = parseFloat(discountValue);
+      if (isNaN(discountValueNumber) || discountValueNumber < 0) {
+        setError(discount, 'Discount must be a non-negative number');
+        flag = false;
+      } else {
+        setSuccess(discount);
+      }
     }
   
     if (imageValue === '') {

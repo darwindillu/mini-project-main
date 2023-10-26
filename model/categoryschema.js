@@ -14,6 +14,10 @@ const categorySchema = new mongoose.Schema({
     availability: {
         type: String,
         default: "true"
+    },
+    discount:{
+        type: Number,
+        default:0
     }
 
 })

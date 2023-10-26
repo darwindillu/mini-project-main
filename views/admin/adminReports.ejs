@@ -1,0 +1,225 @@
+<%- include('../include/adminheader') -%>
+
+
+<style>
+    /* Add CSS styles for the calendar */
+    .calendar-container {
+      max-width: 300px;
+      margin: 20px auto;
+    }
+
+    .calendar {
+      display: inline-block;
+      width: 100%;
+      max-width: 100%;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      overflow: hidden;
+    }
+
+    .calendar-header {
+      background-color: #f0f0f0;
+      padding: 10px;
+      text-align: center;
+      font-weight: bold;
+    }
+
+    .calendar-days {
+      display: flex;
+      flex-wrap: wrap;
+      padding: 10px;
+    }
+
+    .calendar-day {
+      width: 14.28%;
+      box-sizing: border-box;
+      padding: 10px;
+      text-align: center;
+      font-weight: bold;
+    }
+
+    .calendar-day:hover {
+      cursor: pointer;
+      background-color: #f9f9f9;
+    }
+  </style>
+
+          <div class="col-12" style="padding: 20px;">
+            <div class="bg-light rounded h-100 p-4">
+                <h6 class="mb-4">Sales report</h6>
+                <div class="d-flex align-items-center">
+                    <!-- Toggle buttons for date, month, and year -->
+                    <button class="btn btn-secondary me-2" onclick="showMonthField()">Select Month</button>
+                    <button class="btn btn-secondary" onclick="showYearField()">Select Year</button>
+                </div>
+        
+        
+                <!-- Month dropdown -->
+                <select id="monthSelect" class="form-select mt-4" style="display: none">
+                    <option value="1">January</option>
+                    <option value="2">February</option>
+                    <option value="3">March</option>
+                    <option value="4">April</option>
+                    <option value="5">May</option>
+                    <option value="6">June</option>
+                    <option value="7">July</option>
+                    <option value="8">August</option>
+                    <option value="9">September</option>
+                    <option value="10">October</option>
+                    <option value="11">November</option>
+                    <option value="12">December</option>
+                    <!-- Add options for all months -->
+                </select>
+        
+                <!-- Year dropdown -->
+                <select id="yearSelect" class="form-select mt-4" style="display: none">
+                    <option value="2022">2022</option>
+                    <option value="2023">2023</option>
+                    <option value="2024">2024</option>
+                    <option value="2025">2025</option>
+                    <option value="2026">2026</option>
+                    <option value="2027">2027</option>
+                    <option value="2028">2028</option>
+                    <option value="2029">2029</option>
+                    <option value="2030">2030</option>                  
+                    <!-- Add options for relevant years -->
+                </select>
+        
+                <!-- Buttons to download report as PDF or Excel -->
+                <button type="button" class="btn btn-primary mt-4" id="pdf">Download as PDF</button>
+        
+                <!-- Add a container to display the selected date, month, or year -->
+                <div id="selectedFieldDisplay"></div>
+            </div>
+        </div>
+ 
+
+<script>
+
+function showMonthField() {
+    document.getElementById('monthSelect').style.display = 'block';
+    document.getElementById('yearSelect').style.display = 'none';
+    document.getElementById('yearSelect').value = '';
+}
+
+function showYearField() {
+    document.getElementById('monthSelect').style.display = 'none';
+    document.getElementById('yearSelect').style.display = 'block';
+    document.getElementById('monthSelect').value = '';
+}
+
+// function downloadAsPDF() {
+//     const selectedMonth = document.getElementById('monthSelect').value;
+//     const selectedYear = document.getElementById('yearSelect').value;
+
+//     const pdfDownloadUrl = `http://your-backend-api-url/downloadpdfreport?selectedDate=${selectedDate}&selectedMonth=${selectedMonth}&selectedYear=${selectedYear}`;
+
+//     // Trigger the PDF download
+//     window.open(pdfDownloadUrl);
+// }
+
+// ---------------------------sale by month pdf-------------------------
+
+
+const generatePDFReportForMonth = async () => {
+    const selectedDate = document.getElementById('monthSelect').value;
+
+    const data = {
+        selectedDate: selectedDate
+    };
+
+    try {
+        const response = await fetch('http://localhost:3000/admin/month-pdf-report', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+        });
+
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+
+        const blob = await response.blob();
+
+        const url = window.URL.createObjectURL(blob);
+
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `sales_report_${selectedDate}.pdf`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+    } catch (error) {
+        console.error('Error:', error);
+    }
+};
+
+
+
+
+// ------------------------------sale by year pdf--------------------------
+
+
+async function generateYearlyPDF() {
+            const yearInput = document.getElementById('yearSelect');
+            const selectedYear = yearInput.value;
+
+            if (!selectedYear || selectedYear < 2000 || selectedYear > 2030) {
+                alert('Please enter a valid year between 2000 and 2030.');
+                return;
+            }
+
+            const data = {
+                selectedDate: `${selectedYear}-01-01` // Set the selected date to January 1st of the selected year
+            };
+
+            try {
+                const response = await fetch('http://localhost:3000/admin/yearsalepdfreport', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(data)
+                });
+
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+
+                const blob = await response.blob();
+                const url = window.URL.createObjectURL(blob);
+
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `sales_report_${selectedYear}.pdf`;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        }
+
+
+// Event listener for PDF download button
+
+document.getElementById('pdf').addEventListener('click', () => {
+
+  const monthInput = document.getElementById('monthSelect')
+  const selectedMonth = monthInput.value;
+  const yearInput = document.getElementById('yearSelect')
+  const selectedYear = yearInput.value;
+
+ if(selectedMonth){
+    generatePDFReportForMonth(selectedMonth);
+  }
+  else if(selectedYear) {
+    generateYearlyPDF(selectedYear)
+  }
+});
+
+</script>
+
+  <%- include('../include/adminfooter') -%>

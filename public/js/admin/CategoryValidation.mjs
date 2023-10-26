@@ -35,11 +35,7 @@ const validateInputs=()=>{
     const catnameValue=catname.value.trim();
     const descriptionValue=description.value.trim();
 
-
-
     let flag = false;
-
-  
 
     if(catnameValue===''){
         setError(catname,'Name is required')

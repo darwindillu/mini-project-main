@@ -20,6 +20,7 @@
           <!-- <a class="nav-link" href="/home/editpassword" target="__blank">Security</a> -->
           <a class="nav-link" href="/">Home</a>
       </nav>
+      <input type="hidden" value="<%= userId %>" id="userId">
       <hr class="mt-0 mb-4">
       <div class="row">
           <div class="col-xl-4">
@@ -141,16 +142,18 @@
 
 function topUpWallet() {
 
-const amount=document.getElementById('topUpAmount').value.trim()
+const amount=document.getElementById('topUpAmount')
+const amountValue= parseInt(amount.value.trim())
+const userId= document.getElementById('userId').value.trim()
 
-if (!amount) {
+if (!amountValue) {
     const errorElement = document.querySelector('.error');
     errorElement.textContent = 'Please enter an amount.';
     setTimeout(()=>{
   errorElement.textContent=''
 },3000)
     return; 
-  }else if (amount <=0) {
+  }else if (amountValue <=0) {
     const errorElement = document.querySelector('.error');
     errorElement.textContent = 'Cannot Be Negative';
     setTimeout(()=>{
@@ -170,7 +173,7 @@ fetch(url,{
           headers : {
               'Content-Type' : 'application/json'
           },
-          body : JSON.stringify({amount})
+          body : JSON.stringify({amountValue,userId})
       })
       .then(response => response.json())
       .then(data =>{

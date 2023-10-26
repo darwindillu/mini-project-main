@@ -47,9 +47,6 @@ const registerSchema = new mongoose.Schema({
                 type: Number,
                 default: 1
             }, 
-            productprice:{
-                 type:Number
-            },
             stock:{
                 type:Number
             },
@@ -62,9 +59,6 @@ const registerSchema = new mongoose.Schema({
             price: {
                 type: Number,
             },
-            offer: {
-                type: String
-            },
             grandtotal: {
                 type: Number,
             },
@@ -73,8 +67,10 @@ const registerSchema = new mongoose.Schema({
    
 
     walletbalance:{
-        type:Number,
+        type: Number,
+        default:0
     },
+    
     wallethistory: [
         {   
             process:{
@@ -114,6 +110,26 @@ const registerSchema = new mongoose.Schema({
         }
     }],
 
+    coupons:[{
+       code:{
+        type:String
+       },
+       couponId:{
+        type:mongoose.Schema.Types.ObjectId,
+        ref:'coupon'
+       }
+    }],
+
+    usedCoupons: [{
+        code: {
+          type: String,
+        },
+        couponId: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: 'coupon',
+        },
+      }],
+      
 orders: [{
     razorpay_order_Payment_Id:{
         type:String
@@ -123,9 +139,6 @@ orders: [{
     },
     address: {
         type:String
-    },
-    total: {
-        type: Number
     },
     payment: {
         type: String
@@ -149,7 +162,7 @@ orders: [{
         type:Number
     },
     userId:{
-        type:mongoose.Schema.Types.ObjectId
+        type:mongoose.Schema.Types.ObjectId,
     }
    }]
 })

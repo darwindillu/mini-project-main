@@ -168,6 +168,6 @@ orders: [{
 })
 
 registerSchema.plugin(mongoosePaginate);
-const registercollection = new mongoose.model("user register", registerSchema);
+const registercollection = new mongoose.model("userregister", registerSchema);
 
 module.exports = registercollection;

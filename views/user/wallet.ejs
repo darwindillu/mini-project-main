@@ -161,7 +161,7 @@ if (!amountValue) {
 
 
 
-const url = 'http://localhost:3000/user/topUp'
+const url = 'http://shoppeee.shop/user/topUp'
 
 
 fetch(url,{
@@ -183,7 +183,7 @@ fetch(url,{
           "description": "Test Transaction",
           "image": "",
           "order_id": data.order.id, 
-          "callback_url": `http://localhost:3000/user/topUpDone?data=${data}&amount=${JSON.stringify(amount)}`,
+          "callback_url": `http://shoppeee.shop/user/topUpDone?data=${data}&amount=${JSON.stringify(amount)}`,
           "prefill": { 
               "name": data.username, 
               "email": data.email,

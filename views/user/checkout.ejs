@@ -329,7 +329,7 @@
         }
         if (selectedAddress) {
 
-          const url = 'http://localhost:3000/user/payorder'
+          const url = 'http://shoppeee.shop/user/payorder'
           const productData = [];
           const productRows = document.querySelectorAll('.product-row');
 
@@ -371,7 +371,7 @@
                   description: 'Test Transaction',
                   image: '',
                   order_id: order.order.id,
-                  callback_url: `http://localhost:3000/user/paymentdone?productData=${JSON.stringify(productData)}&selectedAddress=${JSON.stringify(selectedAddress)}&grandtotal=${totalamount}`,
+                  callback_url: `http://shoppeee.shop/user/paymentdone?productData=${JSON.stringify(productData)}&selectedAddress=${JSON.stringify(selectedAddress)}&grandtotal=${totalamount}`,
                   prefill: {
                   },
                   notes: {
@@ -500,7 +500,7 @@
       let coupenadded = document.getElementById('coupenadded')
       let discount = document.getElementById('discount')
       let total1 = document.getElementById('grandtotal1');
-      const url = 'http://localhost:3000/user/verifyCoupon'
+      const url = 'http://shoppeee.shop/user/verifyCoupon'
 
 
       fetch(url, {
@@ -545,7 +545,7 @@
       const coupenid = document.getElementById('coupenid').innerText
       const Proceedchkout = document.getElementById('Proceedchkout')
 
-      const url = 'http://localhost:3000/user/clearcoupon'
+      const url = 'http://shoppeee.shop/user/clearcoupon'
       fetch(url,{
           method: 'POST',
           headers: {

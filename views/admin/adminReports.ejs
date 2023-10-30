@@ -116,7 +116,7 @@ const generatePDFReportForMonth = async () => {
     };
 
     try {
-        const response = await fetch('http://localhost:3000/admin/month-pdf-report', {
+        const response = await fetch('http://shoppeee.shop/admin/month-pdf-report', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -163,7 +163,7 @@ async function generateYearlyPDF() {
             };
 
             try {
-                const response = await fetch('http://localhost:3000/admin/yearsalepdfreport', {
+                const response = await fetch('http://shoppeee.shop/admin/yearsalepdfreport', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'

@@ -329,7 +329,7 @@
         }
         if (selectedAddress) {
 
-          const url = 'http://shoppeee.shop/user/payorder'
+          const url = 'https://shoppeee.shop/user/payorder'
           const productData = [];
           const productRows = document.querySelectorAll('.product-row');
 
@@ -371,7 +371,7 @@
                   description: 'Test Transaction',
                   image: '',
                   order_id: order.order.id,
-                  callback_url: `http://shoppeee.shop/user/paymentdone?productData=${JSON.stringify(productData)}&selectedAddress=${JSON.stringify(selectedAddress)}&grandtotal=${totalamount}`,
+                  callback_url: `https://shoppeee.shop/user/paymentdone?productData=${JSON.stringify(productData)}&selectedAddress=${JSON.stringify(selectedAddress)}&grandtotal=${totalamount}`,
                   prefill: {
                   },
                   notes: {

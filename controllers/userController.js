@@ -563,19 +563,14 @@ const myOrders = async (req, res) => {
     
     const limitedOrdersWithProducts = productsForFirstOrder.slice(a, b);
     
-    let date1;
-
      limitedOrdersWithProducts.forEach(order => {
       const isoDate = new Date(order.date); 
       const formattedDate = isoDate.toISOString().split('T')[0]; 
       order.date = formattedDate;
-      date1 = formattedDate
-      console.log(date1);
     });    
-    // console.log(limitedOrdersWithProducts);
 
 
-    res.render('user/order', { orders: limitedOrdersWithProducts,date1, pagenum, pages, user, userId, orderId, proId });
+    res.render('user/order', { orders: limitedOrdersWithProducts, pagenum, pages, user, userId, orderId, proId });
   }
   catch (error) {
     console.error('Error fetching orders:', error);

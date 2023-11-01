@@ -138,10 +138,13 @@
                     <%= collections.productname %>
                   </h4>
                   <div class=" my-3">
-                    <div class="text-warning mb-1 me-2" >
-                      <span class=" ms-2 fa-star" style="color: blue; font-weight: bold;">RATING: <%= averageRating %></span>
+                    <% if(averageRating > 1) %>{
 
-                    </div>
+                      <div class="text-warning mb-1 me-2" >
+                        <span  style="color: blue; font-weight: bold;">RATING: <%= averageRating %></span>
+  
+                      </div>
+                  <%  } %>
 
                     <span class=" ms-2" style="color: blue; font-weight: bold;">IN STOCK: <%= collections.stock %></span>
                   </div>
@@ -196,6 +199,7 @@
                               <small class="text-muted"><%= data.Date %></small>
                            </div>
                         </div>
+
                         <span class="fs-1 my-0 fw-bolder text-success"><%= data.rating %></span>
                      </div>
                      <div class="card-body py-2">

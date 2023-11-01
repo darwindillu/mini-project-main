@@ -563,6 +563,10 @@ const myOrders = async (req, res) => {
 
     const limitedOrdersWithProducts = productsForFirstOrder.slice(a, b);
 
+    limitedOrdersWithProducts.forEach(order => {
+      order.date = order.date.toDateString(); 
+    });
+
     res.render('user/order', { orders: limitedOrdersWithProducts, pagenum, pages, user, userId, orderId, proId });
   }
   catch (error) {

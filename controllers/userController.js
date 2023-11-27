@@ -20,8 +20,10 @@ const { product } = require('./adminController');
 const transporter = nodemailer.createTransport({
   service: 'Gmail',
   auth: {
+    // user: 'ddillu777@gmail.com',
+    // pass: 'qpsu fccf iaia oeer'
     user: 'ddillu777@gmail.com',
-    pass: 'qpsu fccf iaia oeer'
+    pass: 'mmdt esnu lahv lmbd'
   },
 });
 
@@ -103,12 +105,14 @@ const newRegister = async (req, res) => {
         mobile: req.body.mobile,
         password: await bcrypt.hash(req.body.password, 10)
       }
+      console.log(data);
       req.session.data = data
       req.session.trueregister = true
       const flag = req.session.trueregister
 
       if (flag) {
         const otp = generateOtp.generate(6, { digits: true, alphabets: false, specialChars: false });
+        console.log(otp);
         req.session.registerotp = otp
 
         const mailOptions = {
